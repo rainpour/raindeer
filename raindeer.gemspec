@@ -44,13 +44,13 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lowevent', '~> 0.8'
   spec.add_dependency 'lowloop', '~> 0.8', '>= 0.8.4'
   spec.add_dependency 'lownode', '~> 0.5', '>= 0.5.6'
-  spec.add_dependency 'lowtype', '>= 1.6.1'
+  spec.add_dependency 'lowtype', '>= 1.6.2'
 
   spec.add_dependency 'antlers', '~> 1.3'
   spec.add_dependency 'expressions', '~> 0.4'
   spec.add_dependency 'observers', '~> 1.0', '>= 1.1.0'
   spec.add_dependency 'plugs', '~> 0.4'
   spec.add_dependency 'providers', '~> 0.6'
-  spec.add_dependency 'raindown', '~> 0.2'
+  spec.add_dependency 'raindown', '>= 0.8'
   spec.add_dependency 'trees', '~> 0.3'
 end

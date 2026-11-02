@@ -2,7 +2,6 @@ PATH
   remote: ../antlers
   specs:
     antlers (1.3.1)
-      erb
       lowkey (>= 0.7.0)
       plugs
 
@@ -66,11 +65,11 @@ PATH
 PATH
   remote: ../lowtype
   specs:
-    lowtype (1.6.1)
+    lowtype (1.6.2)
       dirload
       expressions (~> 0.1)
       lowkey (>= 0.7.1)
-      trees
+      trees (>= 0.4)
 
 PATH
   remote: ../observers
@@ -91,28 +90,29 @@ PATH
 PATH
   remote: ../raindown
   specs:
-    raindown (0.3.0)
+    raindown (0.8.0)
       antlers (>= 1.2.2)
       commonmarker
       csv
+      curses (~> 1.7)
       dirload
       listen
       lowkey (>= 0.7.0)
       lownode
-      nokogiri
       plugs
+      rouge (~> 5.1)
       trees (>= 0.3.5)
       unicode-display_width (~> 3.1)
 
 PATH
   remote: ../trees
   specs:
-    trees (0.3.5)
+    trees (0.4.0)
 
 PATH
   remote: .
   specs:
-    raindeer (1.0.5)
+    raindeer (1.0.6)
       antlers (~> 1.3)
       dirload (~> 0.7, >= 0.7.1)
       expressions (~> 0.4)
@@ -121,13 +121,13 @@ PATH
       lowevent (~> 0.8)
       lowloop (~> 0.8, >= 0.8.4)
       lownode (~> 0.5, >= 0.5.6)
-      lowtype (>= 1.6.1)
+      lowtype (>= 1.6.2)
       observers (~> 1.0, >= 1.1.0)
       ostruct
       paint
       plugs (~> 0.4)
       providers (~> 0.6)
-      raindown (~> 0.2)
+      raindown (>= 0.8)
       ruby-progressbar
       trees (~> 0.3)
 
@@ -163,7 +163,8 @@ GEM
       fiber-annotation
       fiber-local (~> 1.1)
       json
-    csv (3.3.6)
+    csv (3.3.7)
+    curses (1.7.0)
     diff-lcs (1.6.2)
     erb (6.0.7)
     ffi (1.17.4-aarch64-linux-gnu)
@@ -178,7 +179,7 @@ GEM
     fiber-local (1.1.0)
       fiber-storage
     fiber-storage (1.0.1)
-    io-console (0.9.4)
+    io-console (0.9.5)
     io-endpoint (0.19.0)
       openssl (>= 3.3.0)
     io-event (1.22.3)
@@ -197,22 +198,6 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
-    nokogiri (1.19.4-aarch64-linux-gnu)
-      racc (~> 1.4)
-    nokogiri (1.19.4-aarch64-linux-musl)
-      racc (~> 1.4)
-    nokogiri (1.19.4-arm-linux-gnu)
-      racc (~> 1.4)
-    nokogiri (1.19.4-arm-linux-musl)
-      racc (~> 1.4)
-    nokogiri (1.19.4-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.19.4-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.19.4-x86_64-linux-gnu)
-      racc (~> 1.4)
-    nokogiri (1.19.4-x86_64-linux-musl)
-      racc (~> 1.4)
     openssl (4.0.2)
     ostruct (0.6.3)
     paint (2.3.0)
@@ -250,6 +235,8 @@ GEM
     regexp_parser (2.13.1)
     reline (0.7.0)
       io-console (~> 0.5)
+    rouge (5.1.0)
+      strscan (~> 3.1)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -263,7 +250,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
-    rubocop (1.92.1)
+    rubocop (1.92.2)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -278,8 +265,9 @@ GEM
       parser (>= 3.3.7.2)
       prism (~> 1.7)
     ruby-progressbar (1.13.0)
-    sequel (5.109.0)
+    sequel (5.110.0)
       bigdecimal
+    strscan (3.1.8)
     timecop (0.9.11)
     tsort (0.2.0)
     unicode-display_width (3.3.0)
@@ -338,7 +326,8 @@ CHECKSUMS
   commonmarker (2.10.1-x86_64-linux) sha256=4b2c4b9084baca131146c92dde02bcb40ef3d2768a6772648c1970bb51842734
   commonmarker (2.10.1-x86_64-linux-musl) sha256=afa9e0dc1fef554b7779d815a574d1cb602a9ff9b548dd8be80d66ac69f83866
   console (1.38.0) sha256=35b82f59130e95e9be6b832d9e539c8b3988fc192e4a8e9a86ab4922f44ad5de
-  csv (3.3.6) sha256=aba61e7e507a66f03d45cb1f3c4b6359861c3504038b422962875dce099e4456
+  csv (3.3.7) sha256=15a3f16f6628da8664d455eb634e7f22031bcf53044923caf56975109e71b9f8
+  curses (1.7.0) sha256=c524ff30704bbd136d68d2731263b31edaf4f236b0cbb9b8dd6c802de3317057
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   dirload (0.7.1)
   erb (6.0.7) sha256=c5ca6dc25b0ef974a44dc8f59fe847577122483b1968a38dec305c60bf91ee92
@@ -354,7 +343,7 @@ CHECKSUMS
   fiber-annotation (0.2.0) sha256=7abfadf1d119f508867d4103bf231c0354d019cc39a5738945dec2edadaf6c03
   fiber-local (1.1.0) sha256=c885f94f210fb9b05737de65d511136ea602e00c5105953748aa0f8793489f06
   fiber-storage (1.0.1) sha256=f48e5b6d8b0be96dac486332b55cee82240057065dc761c1ea692b2e719240e1
-  io-console (0.9.4) sha256=a403304f32928ee85e56d457b4612ca43f2703b561a3258844992bd24085fbb1
+  io-console (0.9.5) sha256=83dd9bbf4c4680416629245b39cd4212eb5f4d9a4ea91804870c1f6b846414d5
   io-endpoint (0.19.0) sha256=547aaefe9a78bc57fe25f9f7661b460395ebdfda506f70fdf4cc71d2ae5ca578
   io-event (1.22.3) sha256=1b12f144898bd36b689ee1e0898750fc04adf039188c7e24a05f21fa63cc6adb
   io-stream (0.14.0) sha256=07d9b13ea2066ccbbc761fff8d69ad5a31e47561d31e02cc271f3ed9c1a8f1cd
@@ -369,15 +358,7 @@ CHECKSUMS
   lowkey (0.7.1)
   lowloop (0.8.4)
   lownode (0.5.6)
-  lowtype (1.6.1)
-  nokogiri (1.19.4-aarch64-linux-gnu) sha256=1269fb644a6de405057a53dd5c762b1209b43ca7424f839454d3dbc677c31a8f
-  nokogiri (1.19.4-aarch64-linux-musl) sha256=35c65b9ce72b3bb03207bdbe7067915019dc18c1b9b59139684bd6690fdd01af
-  nokogiri (1.19.4-arm-linux-gnu) sha256=a301313e38bb065d68239e79734bcd6f56fb6efaacebde29e9abf2a4735340ca
-  nokogiri (1.19.4-arm-linux-musl) sha256=588923c101bcfa78869734d247d25b598674323e7f22474fc468f6e5647311eb
-  nokogiri (1.19.4-arm64-darwin) sha256=a46db9853286e6597b36ebc6953817d15acf3a299583eb3f89fdc6f91dd63527
-  nokogiri (1.19.4-x86_64-darwin) sha256=7fd17057d3e1f00e9954a74b3cd76595d3d4a5ef233b7ed9599047c204f70551
-  nokogiri (1.19.4-x86_64-linux-gnu) sha256=379fae440b28915e3f19d752ce2dcf8465ed2b2fbefd2a7ca0dd497bc981a06a
-  nokogiri (1.19.4-x86_64-linux-musl) sha256=17dfb7c1fa194ae02fbf7c51a7afc8d278045ab3fdacfd86f91d02d7b274470b
+  lowtype (1.6.2)
   observers (1.1.0)
   openssl (4.0.2) sha256=1037ad2868ae58df9ad917891c0c0f9815a1172f6846d4bcdd508e4c2ee747c2
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
@@ -396,8 +377,8 @@ CHECKSUMS
   providers (0.6.2)
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
-  raindeer (1.0.5)
-  raindown (0.3.0)
+  raindeer (1.0.6)
+  raindown (0.8.0)
   rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
@@ -405,17 +386,19 @@ CHECKSUMS
   rdoc (8.1.0) sha256=befc37880a5cfd36dcb176c748b5fd5ee39dd3536a75e81824e4972ce230f60a
   regexp_parser (2.13.1) sha256=5aedb6b7c35688f51e86eef17a15374dfd287c83f4ca644b2c5f3ec50a33b44b
   reline (0.7.0) sha256=5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d
+  rouge (5.1.0) sha256=b77c632842ab7f5147940212f0345808cccfbce864fd5b631d7d12a35ac85452
   rspec (3.13.2) sha256=206284a08ad798e61f86d7ca3e376718d52c0bc944626b2349266f239f820587
   rspec-core (3.13.6) sha256=a8823c6411667b60a8bca135364351dda34cd55e44ff94c4be4633b37d828b2d
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-mocks (3.13.8) sha256=086ad3d3d17533f4237643de0b5c42f04b66348c28bf6b9c2d3f4a3b01af1d47
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
-  rubocop (1.92.1) sha256=a905381a5344215a79abcfe80f6c94366447e6a55347c9a525b5a24990e33f62
+  rubocop (1.92.2) sha256=14fb31eed143a0dc6f78186c550c1715e81cd38f59d05d1165050e445c1f5382
   rubocop-ast (1.50.0) sha256=b9ca88300da0803ee222ad20cdb30494c0a784eed06fdc35d254b06d662788db
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
-  sequel (5.109.0) sha256=e0d1d474442d620c8497d7f4851c0cc3a277920519051b8014b2877aa55efffe
+  sequel (5.110.0) sha256=c316335b352adb4109bb02ade237b1a6dbd493493def34542ce05893f62138ae
+  strscan (3.1.8) sha256=aae2db611a225559f21ffbb71765c9a4e60fd262534a9ea84f4f11c7f32f679e
   timecop (0.9.11) sha256=41284dc6e5041f2184f781ace766f942108c842f8d8c1386a26e6343decc7542
-  trees (0.3.5)
+  trees (0.4.0)
   tsort (0.2.0) sha256=9650a793f6859a43b6641671278f79cfead60ac714148aabe4e3f0060480089f
   unicode-display_width (3.3.0) sha256=4b7aa66a4b11db50f6f7e98411215cd0dd10eaecb665d36eec5bcacb3fa0b613
   unicode-emoji (4.3.0) sha256=11c02fa73290378c066bb0562cd4c87d8e1b706fbbe0059ca12746a4244de8ce
