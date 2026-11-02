@@ -4,7 +4,7 @@ require 'raindown'
 
 module Rain
   # Generates static site pages and those pages have file paths that match a route "{page.path}".
-  # Unlike the Raindown CLI we don't write-back and we hide directives "<{}>" in the html output.
+  # Unlike the Raindown CLI we don't write-back. Directives in "<{}>" or HTML comments are left out of the html output.
   # This repo's .raindown/config.yml is for its own Markdown/Raindown files, not the static site.
   class Pages < Raindown::Pages
     include LowType
@@ -12,19 +12,18 @@ module Rain
     attr_reader :url_paths
 
     Page = Struct.new(:metadata, :html)
-    RENDER_OPTIONS = { hide_directives: true }.freeze
 
     def initialize(metadata:)
       @url_paths = {}
 
-      super(metadata:, root: Pages.pages_path, render_options: RENDER_OPTIONS)
+      super(metadata:, root: Pages.pages_path)
     end
 
     def page(path:)
       path = '/home' if path == '/'
       file_path = @url_paths[path] || return
 
-      Page.new(@metadata[file_path], Raindown.render_file(path: file_path, metadata: self, **RENDER_OPTIONS))
+      Page.new(@metadata[file_path], Raindown.render_file(path: file_path, metadata: self))
     end
 
     private

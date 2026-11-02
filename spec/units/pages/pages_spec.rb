@@ -22,7 +22,7 @@ RSpec.describe Rain::Pages do
 
   before do
     write('docs/_basics/_1-getting-started.md', "---\ntitle: Getting started\n---\n\n# Getting started\n")
-    write('docs/_basics/_2-setup.rd', "---\ntitle: Setup\n---\n\n# Setup\n\nfiles: folder: 'basics'\n")
+    write('docs/_basics/_2-setup.rd', "---\ntitle: Setup\n---\n\n# Setup\n\n<!-- files: folder: 'basics' -->\n<!-- :files -->\n")
     write('home.md', "# Home\n")
   end
 
@@ -44,16 +44,14 @@ RSpec.describe Rain::Pages do
 
     expect(page.metadata).to include(title: 'Setup', path: '/docs/setup')
     expect(page.html).to include('<h1 id="setup">', '<a href="/docs/getting-started">Getting started</a>')
-    expect(page.html).to include("<!-- files: folder: 'basics' -->")
-    expect(page.html).not_to include('<strong>')
+    expect(page.html).not_to include('files:', '<strong>')
   end
 
-  it "hides directives in a listed page's content, even with a .raindown/config.yml" do
-    FileUtils.mkdir_p(File.join(@dir, '.raindown'))
-    File.write(File.join(@dir, '.raindown', 'config.yml'), "hide_directives: false\n")
+  it "leaves directives out of a listed page's content" do
+    content = pages.list(folder: 'basics').last.content
 
-    expect(pages.list(folder: 'basics').last.content).to include("<!-- files: folder: 'basics' -->")
-    expect(pages.page(path: '/docs/setup').html).not_to include('<strong>')
+    expect(content).to include('<h1 id="setup">')
+    expect(content).not_to include('files:', '<strong>')
   end
 
   it 'renders the home page for /' do
