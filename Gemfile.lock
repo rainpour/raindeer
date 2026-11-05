@@ -1,7 +1,7 @@
 PATH
   remote: ../antlers
   specs:
-    antlers (1.3.1)
+    antlers (1.4.0)
       lowkey (>= 0.7.0)
       plugs
 
@@ -65,7 +65,7 @@ PATH
 PATH
   remote: ../lowtype
   specs:
-    lowtype (1.6.2)
+    lowtype (1.7.0)
       dirload
       expressions (~> 0.1)
       lowkey (>= 0.7.1)
@@ -90,8 +90,8 @@ PATH
 PATH
   remote: ../raindown
   specs:
-    raindown (0.8.0)
-      antlers (>= 1.2.2)
+    raindown (0.13.0)
+      antlers (>= 1.4.0)
       commonmarker
       csv
       curses (~> 1.7)
@@ -99,9 +99,10 @@ PATH
       listen
       lowkey (>= 0.7.0)
       lownode
+      lowtype (>= 1.7)
       plugs
       rouge (~> 5.1)
-      trees (>= 0.3.5)
+      trees (>= 0.4.0)
       unicode-display_width (~> 3.1)
 
 PATH
@@ -127,9 +128,9 @@ PATH
       paint
       plugs (~> 0.4)
       providers (~> 0.6)
-      raindown (>= 0.8)
+      raindown (>= 0.13)
       ruby-progressbar
-      trees (~> 0.3)
+      trees (~> 0.4)
 
 GEM
   remote: https://rubygems.org/
@@ -310,7 +311,7 @@ DEPENDENCIES
   trees!
 
 CHECKSUMS
-  antlers (1.3.1)
+  antlers (1.4.0)
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   async (2.46.0) sha256=34f984733dbf63a997376346451ec995e858cacc3105e86ccfeaf8877b4f490b
   async-http (0.105.0) sha256=55191969d5cf61be5fbc2e0aadd51d77085318ba192a5ff5e12e3aba0826906a
@@ -358,7 +359,7 @@ CHECKSUMS
   lowkey (0.7.1)
   lowloop (0.8.4)
   lownode (0.5.6)
-  lowtype (1.6.2)
+  lowtype (1.7.0)
   observers (1.1.0)
   openssl (4.0.2) sha256=1037ad2868ae58df9ad917891c0c0f9815a1172f6846d4bcdd508e4c2ee747c2
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
@@ -378,7 +379,7 @@ CHECKSUMS
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
   raindeer (1.0.6)
-  raindown (0.8.0)
+  raindown (0.13.0)
   rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e

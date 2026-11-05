@@ -16,7 +16,8 @@ module Rain
     def initialize(metadata:)
       @url_paths = {}
 
-      super(metadata:, root: Pages.pages_path)
+      # It's important to load every file's metadata on boot.
+      super(root: Pages.pages_path, metadata:, eager: true)
     end
 
     def page(path:)
