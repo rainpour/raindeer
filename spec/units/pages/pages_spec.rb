@@ -30,6 +30,10 @@ RSpec.describe Rain::Pages do
     expect(described_class.url_path(file_path: "#{described_class.pages_path}/docs/_1&_guides/_10-deploy.md")).to eq('/docs/deploy')
   end
 
+  it 'has no URL path for files outside app/pages' do
+    expect(described_class.url_path(file_path: File.expand_path('app/home/syntax.md', Dir.pwd))).to be_nil
+  end
+
   it 'maps URL paths to files' do
     expect(pages.url_paths.keys).to contain_exactly('/docs/getting-started', '/docs/setup', '/home')
   end

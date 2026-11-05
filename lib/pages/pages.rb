@@ -41,6 +41,9 @@ module Rain
       # Remove segments beginning with "_" and ending with "&", "-" or "/", from the path under app/pages.
       # Example: app/pages/docs/_basics/_1-getting-started.md => /docs/getting-started
       def url_path(file_path:)
+        # Skip files outside app/pages.
+        return unless file_path.start_with?("#{pages_path}/")
+
         url_path = file_path.delete_prefix(pages_path).split(Regexp.union(['/', '&'])).map do |segment|
           next segment.sub(/^_\d+\W/, '') if segment.match?(/^_\d+\W/)
           next nil if segment.start_with?('_')
