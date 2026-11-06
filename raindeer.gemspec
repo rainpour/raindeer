@@ -46,11 +46,11 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lownode', '~> 0.5', '>= 0.5.6'
   spec.add_dependency 'lowtype', '>= 1.6.2'
 
-  spec.add_dependency 'antlers', '~> 1.3'
+  spec.add_dependency 'antlers', '~> 1.5'
   spec.add_dependency 'expressions', '~> 0.4'
   spec.add_dependency 'observers', '~> 1.0', '>= 1.1.0'
   spec.add_dependency 'plugs', '~> 0.4'
   spec.add_dependency 'providers', '~> 0.6'
-  spec.add_dependency 'raindown', '>= 0.14'
+  spec.add_dependency 'raindown', '>= 0.15'
   spec.add_dependency 'trees', '~> 0.4'
 end
