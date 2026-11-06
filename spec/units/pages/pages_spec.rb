@@ -22,7 +22,7 @@ RSpec.describe Rain::Pages do
 
   before do
     write('docs/_basics/_1-getting-started.md', "---\ntitle: Getting started\n---\n\n# Getting started\n")
-    write('docs/_basics/_2-setup.rd', "---\ntitle: Setup\n---\n\n# Setup\n\n<!-- files: folder: 'basics' -->\n<!-- :files -->\n")
+    write('docs/_basics/_2-setup.rd', "---\ntitle: Setup\n---\n\n# Setup\n\n<!-- list: folder: 'basics' -->\n<!-- :list -->\n")
     write('home.md', "# Home\n")
   end
 
@@ -48,14 +48,14 @@ RSpec.describe Rain::Pages do
 
     expect(page.metadata).to include(title: 'Setup', path: '/docs/setup')
     expect(page.html).to include('<h1 id="setup">', '<a href="/docs/getting-started">Getting started</a>')
-    expect(page.html).not_to include('files:', '<strong>')
+    expect(page.html).not_to include('list:', '<strong>')
   end
 
   it "leaves directives out of a listed page's content" do
     content = pages.list(folder: 'basics').last.content
 
     expect(content).to include('<h1 id="setup">')
-    expect(content).not_to include('files:', '<strong>')
+    expect(content).not_to include('list:', '<strong>')
   end
 
   it 'renders the home page for /' do
