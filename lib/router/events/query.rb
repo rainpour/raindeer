@@ -5,7 +5,8 @@ require 'uri'
 
 module Rain
   module Events
-    # A request's query string, like "q=rye" in "/search?q=rye", as a hash with symbol keys, for the events made from it.
+    # A request's address and its query string, like /search and "q=rye" in "/search?q=rye", for the events made from it.
+    # A route with a parameter, like /posts/:slug, has that as its route's path, so the address is the event's path.
     module Query
       class << self
         # A request's path without its query string, which routes match on.
@@ -25,6 +26,11 @@ module Rain
 
       def query
         Query.parse(request)
+      end
+
+      # The address the request came to, without its query, like /posts/proofing-oven for the route /posts/:slug.
+      def path
+        request && Query.path(request)
       end
     end
 

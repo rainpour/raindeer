@@ -27,6 +27,13 @@ module Rain
         expect(RouteEvent.new(route: Route.new(path: '/'), request: request('/')).query).to eq({})
       end
 
+      it "gives an event's address without its query, rather than its route's path" do
+        event = RouteEvent.new(route: Route.new(path: '/posts/:slug'), request: request('/posts/proofing-oven?page=2'))
+
+        expect([event.path, event.route.path]).to eq(['/posts/proofing-oven', '/posts/:slug'])
+        expect(Low::Events::RenderEvent.new(request: request('/a?b=c')).path).to eq('/a')
+      end
+
       it 'takes the query string off a path' do
         expect(described_class.path(request('/search?q=rye'))).to eq('/search')
       end
