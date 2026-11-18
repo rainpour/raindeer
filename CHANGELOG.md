@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.12
+
+### Added
+
+- `event.query`, a request's query string as a hash, on route, wildcard and render events
+
+### Fixed
+
+- A path with a query string, like `/search?q=rye`, routes as its path, rather than responding with a 404
+
 ## 1.0.11
 
 ### Added
