@@ -53,10 +53,7 @@ module Rain
       locale = Rain::Translations.negotiate(accept_language:)
 
       response_event = Antlers::Translations.with_locale(locale) do
-        Fiber[:raindeer_request] = event.request
         respond(request: event.request)
-      ensure
-        Fiber[:raindeer_request] = nil
       end
       language_headers(response: response_event.response, locale:) if response_event.is_a?(ResponseEvent)
 

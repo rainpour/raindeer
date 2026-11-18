@@ -19,6 +19,10 @@ module Rain
         expect(RouteEvent.new(route:, request:).cookies).to eq({ 'session' => 'a b=', 'theme' => 'dark' })
       end
 
+      it "reads a child node's render event's request's cookies" do
+        expect(Low::Events::RenderEvent.new(request:).cookies['session']).to eq('a b=')
+      end
+
       it "reads a wildcard event's request's cookies" do
         expect(WildcardEvent.new(key: '/*', route:, request:).cookies['theme']).to eq('dark')
       end
