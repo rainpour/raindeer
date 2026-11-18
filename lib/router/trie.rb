@@ -41,7 +41,7 @@ module Rain
     end
 
     def match(request:, current_node: @root_node, current_index: 0, params: {})
-      path = request.path
+      path = Events::Query.path(request)
 
       return [] if (key = path[current_index]).nil?
 
@@ -71,7 +71,7 @@ module Rain
 
     # Mid nodes side_effect, end nodes render.
     def route_event(next_index:, params:, request:, route:)
-      action = request.path[next_index].nil? ? :render : :side_effect
+      action = Events::Query.path(request)[next_index].nil? ? :render : :side_effect
       action = :receive if action == :render && request.body
 
       actions = [action]

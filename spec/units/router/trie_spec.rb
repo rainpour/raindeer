@@ -50,6 +50,18 @@ module Rain
         end
       end
 
+      context 'with a query string' do
+        let(:request) { Low::Support::RequestFactory.request(path: '/users/1?tab=posts', verb: 'GET') }
+
+        it 'matches the path without it, to render' do
+          trie.merge(route: Route.new(path: '/users/:id'))
+
+          event = trie.match(request:).last
+          expect(event.route).to have_attributes(path: '/users/:id')
+          expect([event.params, event.actions.first]).to eq([{ id: '1' }, :render])
+        end
+      end
+
       context 'with a static/dynamic route' do
         let(:request) { Low::Support::RequestFactory.request(path: '/users/1', verb: 'GET') }
 

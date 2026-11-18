@@ -2,11 +2,13 @@
 
 require 'lowevent'
 require_relative 'cookies'
+require_relative 'query'
 
 module Rain
   module Events
     class RouteEvent < ::LowEvent
       include Cookies
+      include Query
 
       attr_reader :route, :params, :request
 
