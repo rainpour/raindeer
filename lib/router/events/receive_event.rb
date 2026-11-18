@@ -8,12 +8,8 @@ module Rain
   module Events
     # A RouteEvent for a request with a body, which calls the "receive" action.
     class ReceiveEvent < RouteEvent
-      attr_reader :request
-
       def initialize(route:, request:, actions: [], params: Hash | nil)
-        super(route:, actions:, params:)
-
-        @request = request
+        super
       end
 
       # The body is a stream that can only be read once, so it's buffered on the request for every event of the request to read.

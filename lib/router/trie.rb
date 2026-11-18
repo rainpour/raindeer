@@ -79,7 +79,7 @@ module Rain
 
       return Events::ReceiveEvent.new(actions:, route:, params:, request:) if action == :receive
 
-      Events::RouteEvent.new(actions:, route:, params:)
+      Events::RouteEvent.new(actions:, route:, params:, request:)
     end
 
     def capture_param(current_index:, path:)
