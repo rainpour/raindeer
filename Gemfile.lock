@@ -1,7 +1,7 @@
 PATH
   remote: ../antlers
   specs:
-    antlers (1.5.2)
+    antlers (1.5.4)
       lowkey (>= 0.7.0)
       plugs
 
@@ -55,8 +55,8 @@ PATH
 PATH
   remote: ../lownode
   specs:
-    lownode (0.5.8)
-      antlers (~> 1.3)
+    lownode (0.5.9)
+      antlers (~> 1.5, >= 1.5.3)
       lowevent
       lowtype (~> 1.6)
       observers
@@ -321,7 +321,7 @@ DEPENDENCIES
   trees!
 
 CHECKSUMS
-  antlers (1.5.2)
+  antlers (1.5.4)
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
   async (2.46.0) sha256=34f984733dbf63a997376346451ec995e858cacc3105e86ccfeaf8877b4f490b
   async-http (0.105.0) sha256=55191969d5cf61be5fbc2e0aadd51d77085318ba192a5ff5e12e3aba0826906a
@@ -368,7 +368,7 @@ CHECKSUMS
   lowevent (0.8.4)
   lowkey (0.7.4)
   lowloop (0.8.6)
-  lownode (0.5.8)
+  lownode (0.5.9)
   lowtype (1.7.0)
   observers (1.1.1)
   openssl (4.0.2) sha256=1037ad2868ae58df9ad917891c0c0f9815a1172f6846d4bcdd508e4c2ee747c2
