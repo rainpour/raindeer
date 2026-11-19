@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- A form with a file input, sent as `multipart/form-data`, is parsed into `event.body` too: its fields as strings and its files as `Rain::Events::Multipart::UploadedFile`, with their filename, content type and data. A name sent more than once, like several files from one input, gives an array
+
 ## 1.0.17
 
 ### Fixed

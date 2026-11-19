@@ -2,6 +2,7 @@
 
 require 'json'
 require 'uri'
+require_relative 'multipart'
 
 module Rain
   module Events
@@ -21,12 +22,14 @@ module Rain
         @raw_body ||= Body.read(@request)
       end
 
-      # Form and JSON bodies become a hash with symbol keys, other bodies are the raw string.
+      # Form, multipart form and JSON bodies become a hash with symbol keys, other bodies are the raw string. A multipart
+      # form's files are Multipart::UploadedFile.
       def body
         return @body if defined?(@body) # Also keeps a falsy body like JSON "null".
 
         @body = case media_type
                 when 'application/x-www-form-urlencoded' then URI.decode_www_form(raw_body).to_h.transform_keys(&:to_sym)
+                when 'multipart/form-data' then Multipart.parse(raw_body, boundary)
                 when 'application/json' then JSON.parse(raw_body, symbolize_names: true)
                 else raw_body
                 end
@@ -34,7 +37,11 @@ module Rain
 
       private
 
-      def media_type = @request.headers['content-type']&.split(';')&.first&.strip
+      def media_type = content_type&.split(';')&.first&.strip
+
+      def boundary = content_type[/boundary="?([^";]+)"?/i, 1]
+
+      def content_type = Array(@request.headers['content-type']).first
     end
   end
 end
