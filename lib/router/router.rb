@@ -82,7 +82,9 @@ module Rain
 
       if @routes['/*']
         route = Route.new(path: Events::Query.path(request), verbs: @routes['/*'].verbs)
-        wildcard_event = Events::WildcardEvent.take(key: '/*', action: :render, route:, request:)
+        action = :render
+        action = :receive if request.body
+        wildcard_event = Events::WildcardEvent.take(key: '/*', action:, route:, request:)
         return wildcard_event if wildcard_event
       end
 

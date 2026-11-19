@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 require 'lowevent'
+require_relative 'body'
 require_relative 'cookies'
 require_relative 'query'
 
 module Rain
   module Events
+    # An event for a path no route has, which nodes observing "/*" look up, like a page's. A request with a body, like a
+    # form's, calls their "receive" action with it.
     class WildcardEvent < ::LowEvent
+      include Body
       include Cookies
       include Query
 

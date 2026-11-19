@@ -85,6 +85,19 @@ RSpec.describe Rain::Router do
           expect(WildcardObserver).to have_received(:render).with({ event: an_instance_of(Rain::Events::WildcardEvent) })
         end
 
+        context 'with a form' do
+          let(:request) do
+            Low::Support::RequestFactory.request(path: '/anything', verb: 'POST', body: 'nose=red')
+                                        .tap { it.headers.add('content-type', 'application/x-www-form-urlencoded') }
+          end
+
+          before { allow(WildcardObserver).to receive(:receive) { |event:| event.body } }
+
+          it 'receives the form on the observer' do
+            expect(router.request(event: request_event)).to eq({ nose: 'red' })
+          end
+        end
+
         context 'with translations' do
           let(:request) do
             Low::Support::RequestFactory.request(path: '/anything').tap { it.headers.add('accept-language', 'es-MX, en;q=0.8') }
