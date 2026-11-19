@@ -14,7 +14,7 @@ module Rain
   # hidden form_token field. Another site can't read the cookie or know the secret, so it can't make the token.
   #
   # It observes RequestEvent before the router: it turns a forged form away, and on the response's way out, sets the
-  # cookie for a key it gave out while the page rendered.
+  # cookie for a key it gave out while the page rendered, which it keeps in the RequestEvent's store.
   module FormTokens
     COOKIE = 'form_key'
     FIELD = 'form_token' # The hidden field Antlers gives each POST form.
@@ -22,9 +22,6 @@ module Rain
     FORM_TYPES = %w[application/x-www-form-urlencoded multipart/form-data text/plain].freeze
     SAFE_METHODS = %w[GET HEAD OPTIONS].freeze
     KEY_AGE = 365 * 24 * 3600
-
-    # Keys made while responding to a request, for the router to set as a cookie with its response.
-    @new_keys = ObjectSpace::WeakKeyMap.new
 
     class << self
       attr_writer :secret
@@ -37,10 +34,10 @@ module Rain
         Low::Events::StatusEvent.take(status: Low::Types::Status[403], request: event.request) || forbidden
       end
 
-      def response(event:)
-        response = event.response_event.respond_to?(:response) && event.response_event.response
-        cookie = cookie(event.request)
-        response.headers.add('set-cookie', cookie) if response && cookie
+      # Sets the cookie for a key given out while the request was answered.
+      def response(event:, result:)
+        cookie = cookie(event)
+        result.response.headers.add('set-cookie', cookie) if cookie && result.respond_to?(:response)
       end
 
       # The secret from RAIN_SECRET. Without one, a random secret lasts until the server restarts, so a form opened
@@ -49,9 +46,9 @@ module Rain
         @secret ||= ENV.fetch('RAIN_SECRET') { SecureRandom.hex(32) }
       end
 
-      # The token for a request's forms. A browser without a key is given one with the response.
-      def token(request)
-        key = browser_key(request) || (@new_keys[request] ||= SecureRandom.urlsafe_base64(32))
+      # The token for a RequestEvent's forms. A browser without a key is given one with the response.
+      def token(request_event)
+        key = browser_key(request_event.request) || (request_event.store[:form_key] ||= SecureRandom.urlsafe_base64(32))
         hmac(key)
       end
 
@@ -66,12 +63,12 @@ module Rain
         OpenSSL.secure_compare(hmac(key), sent)
       end
 
-      # The Set-Cookie header for a key given out while responding to a request, or nil.
-      def cookie(request)
-        key = @new_keys.delete(request)
+      # The Set-Cookie header for a key given out while answering a RequestEvent, or nil.
+      def cookie(request_event)
+        key = request_event.store.delete(:form_key)
         return unless key
 
-        Low::Responses::Cookie.new(name: COOKIE, value: key, max_age: KEY_AGE, secure: https?(request)).to_s
+        Low::Responses::Cookie.new(name: COOKIE, value: key, max_age: KEY_AGE, secure: https?(request_event.request)).to_s
       end
 
       private
@@ -116,10 +113,9 @@ module Rain
     end
   end
 
-  # Antlers asks for the token of the request a template's rendering for, which its event has.
-  Antlers.form_token = lambda do |current_binding|
-    event = current_binding.local_variable_defined?(:event) && current_binding.local_variable_get(:event)
-    request = event.respond_to?(:request) && event.request
-    FormTokens.token(request) if request
+  # Antlers asks for the token of the request being answered.
+  Antlers.form_token = lambda do
+    request_event = Low::Events::RequestEvent.current
+    FormTokens.token(request_event) if request_event
   end
 end

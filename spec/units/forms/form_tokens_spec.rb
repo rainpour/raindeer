@@ -11,15 +11,19 @@ RSpec.describe Rain::FormTokens do
     Protocol::HTTP::Request.new('http', nil, method, '/cart', nil, Protocol::HTTP::Headers[headers], Protocol::HTTP::Body::Buffered.wrap(body))
   end
 
+  def request_event(**)
+    Low::Events::RequestEvent.new(request: request(**))
+  end
+
   # A browser's key and its token, as a page with a form gives them.
   def key_and_token
-    page = request(method: 'GET')
+    page = request_event(method: 'GET')
     token = described_class.token(page)
     [described_class.cookie(page)[/form_key=([^;]+)/, 1], token]
   end
 
   it 'gives a browser without a key a new one as a cookie, once' do
-    page = request(method: 'GET', proto: 'https')
+    page = request_event(method: 'GET', proto: 'https')
     described_class.token(page)
 
     expect([described_class.cookie(page), described_class.cookie(page)])
@@ -28,7 +32,7 @@ RSpec.describe Rain::FormTokens do
 
   it "gives the same token for a browser's key, and no new cookie" do
     key, token = key_and_token
-    page = request(method: 'GET', cookie: "form_key=#{key}")
+    page = request_event(method: 'GET', cookie: "form_key=#{key}")
 
     expect([described_class.token(page), described_class.cookie(page)]).to eq([token, nil])
   end
@@ -75,10 +79,11 @@ RSpec.describe Rain::FormTokens do
             described_class.valid?(request(method: 'GET'))]).to eq([true, true])
   end
 
-  it "gives Antlers the token of the request a template's event has" do
-    event = Struct.new(:request).new(request(method: 'GET'))
+  it 'gives Antlers the token of the request being answered, and none outside one' do
+    page = request_event(method: 'GET')
+    allow(Low::Events::RequestEvent).to receive(:current).and_return(page, nil)
 
-    expect(Antlers.form_token.call(binding)).to eq(described_class.token(event.request))
+    expect([Antlers.form_token.call, Antlers.form_token.call]).to eq([described_class.token(page), nil])
   end
 end
 
@@ -106,11 +111,10 @@ RSpec.describe Rain::FormTokens, 'observing RequestEvent' do
   end
 
   it 'sets the cookie for a key it gave out on the way out' do
-    page = request(method: 'GET')
+    page = Low::Events::RequestEvent.new(request: request(method: 'GET'))
     described_class.token(page)
     response = Protocol::HTTP::Response.new('HTTP/1.1', 200, Protocol::HTTP::Headers.new, nil)
-    event = Struct.new(:request, :response_event).new(page, Struct.new(:response).new(response))
-    described_class.response(event:)
+    described_class.response(event: page, result: Low::Events::ResponseEvent.new(response:))
 
     expect(response.headers['set-cookie'].first).to start_with('form_key=')
   end
