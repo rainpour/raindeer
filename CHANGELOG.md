@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Anti-forgery tokens for forms. `Rain::FormTokens` gives each browser a key in a `form_key` cookie, and Antlers gives each POST form a token made from it with `RAIN_SECRET`. It observes `RequestEvent` first, and answers a form posted without its token with a 403, before the router. A new key waits in the `RequestEvent`'s store for the response's way out
+- Anti-forgery tokens for forms. `Rain::FormTokens` gives each browser a key in a `form_key` cookie, and Antlers gives each POST form a token made from it with `RAIN_SECRET`. It observes `RequestEvent` first, and answers a form posted without its token with a 403, before the router. The routed node sets a new key's cookie.
 
 ### Changed
 
-- Need Antlers, Observers and LowEvent with form tokens, reordering observers, return actions and `RequestEvent.current`
+- Need Antlers, Observers and LowEvent with form tokens, reordering observers, return actions and the render context's event and routed node
 
 ## 1.0.13
 
