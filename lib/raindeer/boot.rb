@@ -51,9 +51,9 @@ module Rain
     require 'lowloop'
     low_loop = LowLoop.new(config:, router: Providers['rain.router'], renderer: Providers['rain.matrix'])
 
-    # Forms' anti-forgery tokens are checked before anything else answers a request.
-    require_relative '../forms/form_tokens'
-    Low::Events::RequestEvent.define { |observers| [Rain::FormTokens, *observers] }
+    # A request from another site's page is turned away before anything else answers it.
+    require_relative '../security/cross_origin_protection'
+    Low::Events::RequestEvent.define { |observers| [Rain::CrossOriginProtection, *observers] }
     low_loop
   end
 end
