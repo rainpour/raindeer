@@ -20,7 +20,7 @@ module Rain
     host: ENV.fetch('RAIN_HOST', nil),
     port: ConfigLoader.parse_integer(ENV.fetch('RAIN_PORT', nil)),
     web_root: ENV.fetch('RAIN_WEB_ROOT', nil),
-    debug_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_DEBUG', true)),
+    debug_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_DEBUG', nil)),
     matrix_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MATRIX', nil)),
     mirror_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MIRROR', nil))
   }

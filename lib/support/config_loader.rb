@@ -27,11 +27,14 @@ module Rain
         raise ArgumentError, "Expected an integer, got #{value.inspect}"
       end
 
+      # Environment variables are strings, so "1" or "true" becomes true, and "0" or "false" false. Anything else is a
+      # mistake, which would otherwise leave the config file's setting on without saying.
       def parse_boolean(value)
-        return true if value == '1'
-        return false if value == '0'
+        return nil if value.nil?
+        return true if %w[1 true].include?(value)
+        return false if %w[0 false].include?(value)
 
-        nil
+        raise ArgumentError, "Expected 1, 0, true or false, got #{value.inspect}"
       end
     end
   end
