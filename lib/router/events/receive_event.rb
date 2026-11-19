@@ -2,6 +2,7 @@
 
 require 'json'
 require 'uri'
+require_relative 'body'
 require_relative 'route_event'
 
 module Rain
@@ -12,14 +13,8 @@ module Rain
         super
       end
 
-      # The body is a stream that can only be read once, so it's buffered on the request for every event of the request to read.
       def raw_body
-        return @raw_body if @raw_body
-        return @raw_body = '' unless @request.body
-
-        @request.body = @request.body.finish
-        @request.body.rewind
-        @raw_body = @request.body.join || ''
+        @raw_body ||= Body.read(@request)
       end
 
       # Form and JSON bodies become a hash with symbol keys, other bodies are the raw string.

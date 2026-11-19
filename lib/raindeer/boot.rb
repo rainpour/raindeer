@@ -49,7 +49,12 @@ module Rain
     end
 
     require 'lowloop'
-    LowLoop.new(config:, router: Providers['rain.router'], renderer: Providers['rain.matrix'])
+    low_loop = LowLoop.new(config:, router: Providers['rain.router'], renderer: Providers['rain.matrix'])
+
+    # Forms' anti-forgery tokens are checked before anything else answers a request.
+    require_relative '../forms/form_tokens'
+    Low::Events::RequestEvent.define { |observers| [Rain::FormTokens, *observers] }
+    low_loop
   end
 end
 
