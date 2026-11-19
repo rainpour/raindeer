@@ -37,6 +37,14 @@ module Rain
       it 'takes the query string off a path' do
         expect(described_class.path(request('/search?q=rye'))).to eq('/search')
       end
+
+      it 'decodes a path, like the letters a browser encodes' do
+        expect(described_class.path(request('/recipes/w%C3%BCnd%C3%AArbread?page=2'))).to eq('/recipes/wündêrbread')
+      end
+
+      it "keeps a path as it came when it doesn't decode to UTF-8" do
+        expect(described_class.path(request('/a%FF'))).to eq('/a%FF')
+      end
     end
   end
 end

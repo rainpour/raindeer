@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- An event's path is decoded, so a route matches, and a node finds content, at an address with letters like ü in it, which browsers send as %C3%BC
+
 ## 1.0.15
 
 ### Fixed

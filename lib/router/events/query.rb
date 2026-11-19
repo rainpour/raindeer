@@ -9,9 +9,16 @@ module Rain
     # A route with a parameter, like /posts/:slug, has that as its route's path, so the address is the event's path.
     module Query
       class << self
-        # A request's path without its query string, which routes match on.
+        # A request's path without its query string, which routes match on. It's decoded, so /recipes/w%C3%BCnderbread
+        # is /recipes/wünderbread, as content's paths are written. One that doesn't decode to UTF-8 stays as it came.
         def path(request)
-          request.path.split('?', 2).first
+          path = request.path.split('?', 2).first
+          decoded = URI.decode_uri_component(path)
+          return path unless decoded.valid_encoding?
+
+          decoded
+        rescue ArgumentError
+          path
         end
 
         def parse(request)
