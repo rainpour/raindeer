@@ -16,5 +16,7 @@ module Rain
     end
 
     Low::Events::RenderEvent.include(Cookies)
+    # A status's page, like a 404's, knows its visitor too, so it can show the site's layout as they see it.
+    Low::Events::StatusEvent.include(Cookies)
   end
 end

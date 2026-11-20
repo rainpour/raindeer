@@ -42,5 +42,7 @@ module Rain
     end
 
     Low::Events::RenderEvent.include(Query)
+    # A status's page, like a 404's, knows the address it's for, so it can suggest what was meant.
+    Low::Events::StatusEvent.include(Query)
   end
 end
