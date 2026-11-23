@@ -2,16 +2,21 @@
 
 module System
   class LayoutNode < LowNode
+    # In the links to the system files, so a browser or a cache like Cloudflare fetches them fresh after each release.
+    def initialize(event:)
+      @version = Raindeer::VERSION
+    end
+
     def render(event:)
       <html>
         <head>
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-          <link rel="stylesheet" href="/system/system.css">
+          <link rel="stylesheet" href="/system/system.css?v={@version}">
         </head>
         <body>
           <header>
             <div class="container">
-              <a id="favicon" href="/system"><img src="/system/favicon.svg"/></a>
+              <a id="favicon" href="/system"><img src="/system/favicon.svg?v={@version}"/></a>
               <nav id="navbar">
                 <ul>
                   <li><a href="/system">{"Dashboard"}</a>

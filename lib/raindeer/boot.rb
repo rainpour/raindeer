@@ -56,9 +56,13 @@ module Rain
     require 'lowloop'
     low_loop = LowLoop.new(config:, router: Providers['rain.router'], renderer: Providers['rain.matrix'])
 
+    # Raindeer's own files, like the system pages' styles, come before the app's, so they always match this version.
+    raindeer_files = Low::FileServer.new(web_root: File.expand_path('../../public', __dir__), content_types: config.content_types,
+                                         cache_control: config.cache_control)
+
     # A request from another site's page is turned away before anything else answers it.
     require_relative '../security/cross_origin_protection'
-    Low::Events::RequestEvent.define { |observers| [Rain::CrossOriginProtection, *observers] }
+    Low::Events::RequestEvent.define { |observers| [Rain::CrossOriginProtection, raindeer_files, *observers] }
     low_loop
   end
 end

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- Raindeer serves its own system files like `/system/system.css` before the app's, so they always match its version. An app's copy in `public/system` can be deleted
+- The system pages link their files with `?v=` and Raindeer's version, so a browser or a cache like Cloudflare fetches them fresh after each release
+- Needs LowLoop 0.8.11, which lets a second file server share the one file responder
+
 ## 1.0.23
 
 ### Added
