@@ -16,6 +16,7 @@ module System
                 <ul>
                   <li><a href="/system">{"Dashboard"}</a>
                   <li><a href="/system/events">{"Events"}</a>
+                  <li><a href="/system/requests">{"Requests"}</a>
                   <li><a href="/system/routes">{"Routes"}</a>
                 </ul>
               </nav>

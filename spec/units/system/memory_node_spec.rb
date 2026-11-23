@@ -7,6 +7,7 @@ require 'antlers'
 require_relative '../../../lib/raindeer/integrations'
 
 dirload(File.join(Dir.pwd, '/lib/system/memory_node.rb'))
+dirload(File.join(Dir.pwd, '/lib/system/numbers.rb'))
 dirload(File.join(Dir.pwd, '/lib/system/formatters/trend_formatter.rbx'))
 
 RSpec.describe System::MemoryNode do
@@ -24,7 +25,7 @@ RSpec.describe System::MemoryNode do
   end
 
   it 'keeps the last 3 hours of samples a minute apart' do
-    181.times { |minute| described_class.record(described_class::Sample.new(at: minute, megabytes: minute, keys: 1)) }
+    181.times { |minute| described_class.record(described_class::Sample.new(at: minute, megabytes: minute, keys: 1, objects: 1)) }
     samples = described_class.samples
     expect([samples.size, samples.first.megabytes, samples.last.megabytes]).to eq([180, 1, 180])
   end
@@ -41,8 +42,8 @@ RSpec.describe TrendFormatter do
     expect(points).to eq('0.0,76.0 300.0,40.0 600.0,4.0')
   end
 
-  it 'draws values that never change as a flat line' do
+  it 'draws values that never change as a flat line across the middle' do
     points = described_class.new(event: nil, title: 'Keys', values: [62, 62]).instance_variable_get(:@points)
-    expect(points).to eq('0.0,76.0 600.0,76.0')
+    expect(points).to eq('0.0,40.0 600.0,40.0')
   end
 end

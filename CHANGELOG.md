@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- A Requests page at `/system/requests` lists the last 100 requests and opens each to show its event tree
+- The dashboard shows requests in the last minute and typical and slowest response times and threads and live objects and garbage collections
+- The dashboard lists each observed `Interval` with how often it runs and what observes it and when it last ran
+- Live objects get a line each minute like memory and observed keys
+
+### Changed
+
+- The system pages keep to 1000px wide and the stat numbers fit on one line
+- A trend line's area is filled to the bottom of its chart and a line that never changes runs across the middle
+
 ## 1.0.22
 
 ### Added

@@ -1,5 +1,13 @@
 /***** LAYOUT *****/
 
+/* The header, content and footer keep to a readable width on wide screens, and off the edges on narrow ones. */
+header .container,
+main.container,
+footer .container {
+  max-width: 1000px;
+  padding-inline: var(--pico-spacing);
+}
+
 header {
   background-color: #000;
 
@@ -41,11 +49,13 @@ footer {
 
 /***** DASHBOARD *****/
 
+/* A number with what it counts, sized so values like "2 minutes" and "146 MB" fit on one line. */
 .stat {
   .number {
     text-align: center;
-    font-size: 4rem;
+    font-size: 2.5rem;
     font-weight: bold;
+    white-space: nowrap;
   }
   footer {
     text-align: center;
@@ -62,10 +72,35 @@ footer {
     height: 80px;
   }
 
+  /* The area under the line, down to the bottom of the chart. */
+  polygon {
+    fill: var(--pico-primary-background);
+    opacity: 0.2;
+  }
+
   polyline {
     fill: none;
     stroke: var(--pico-primary);
     stroke-width: 2;
     vector-effect: non-scaling-stroke;
+  }
+}
+
+/***** REQUESTS *****/
+
+/* A request's line, which opens to show its event tree, each event indented under the one that caused it. */
+.request {
+  summary small {
+    color: var(--pico-muted-color);
+  }
+
+  .tree,
+  .tree ul {
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--pico-muted-border-color);
+  }
+
+  .tree li {
+    list-style: none;
   }
 }
