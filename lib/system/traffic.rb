@@ -34,11 +34,22 @@ module System
         @lock.synchronize { @seen.count { |_, seen_at| now - seen_at < WINDOW } }
       end
 
-      def per_minute(now: clock)
-        @lock.synchronize { @requests.select { |second, _| now - second < MINUTE }.sum { |_, count| count } }
+      # Requests a second on average over the last minute, so one busy moment doesn't make it jump.
+      def per_second(now: clock)
+        (last_minute(now).sum / MINUTE.to_f).round(1)
+      end
+
+      # The most requests in any one second in the last minute, which shows a burst the average smooths over.
+      def busiest_second(now: clock)
+        last_minute(now).max || 0
       end
 
       private
+
+      # How many requests came in each second of the last minute.
+      def last_minute(now)
+        @lock.synchronize { @requests.select { |second, _| now - second < MINUTE }.values }
+      end
 
       # Drops visitors not seen for 5 minutes and seconds over a minute ago, so memory stays small however busy it gets.
       # Once a second is enough, so a busy app doesn't go through them on every request.

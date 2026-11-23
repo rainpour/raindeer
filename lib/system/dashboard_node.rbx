@@ -20,7 +20,7 @@ module System
         <div class="stats">
           <{ StatFormatter title='Uptime' stat=@uptime }>
           <{ StatFormatter title='Visitors in the last 5 minutes' stat=@visitors }>
-          <{ StatFormatter title='Requests in the last minute' stat=@per_minute }>
+          <{ StatFormatter title='Requests per second' stat=@per_second }>
           <{ StatFormatter title='Answering now' stat=@answering }>
 
           <{ StatFormatter title='Typical response' stat=@typical }>
@@ -36,7 +36,7 @@ module System
           <{ StatFormatter title='Nodes' stat=@node_count }>
           <{ StatFormatter title='Events' stat=@event_count }>
           <{ StatFormatter title='Observed keys' stat=@keys }>
-          <{ StatFormatter title='Requests kept' stat=@kept }>
+          <{ StatFormatter title='Busiest second' stat=@busiest }>
         </div>
 
         <{ if: @trend }>
@@ -69,10 +69,10 @@ module System
     # How busy the app is and how quickly it answers, from the requests the event pool still holds.
     def request_stats
       log = RequestLog.new
-      @per_minute = Traffic.per_minute
+      @per_second = Traffic.per_second
+      @busiest = Traffic.busiest_second
       @visitors = Traffic.visitors
       @answering = log.answering
-      @kept = log.entries.size
       @typical = milliseconds(log.typical_milliseconds)
       @slowest = milliseconds(log.slowest_milliseconds)
     end

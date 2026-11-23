@@ -98,9 +98,15 @@ RSpec.describe System::Traffic do
     expect([described_class.visitors(now: 1250.0), described_class.visitors(now: 1350.0)]).to eq([2, 1])
   end
 
-  it 'counts every request in the last minute, past the event pool\'s 100' do
+  it "averages requests a second over the last minute, past the event pool's 100" do
     250.times { |index| described_class.record(nil, now: 1000.0 + (index * 0.1)) }
-    expect([described_class.per_minute(now: 1030.0), described_class.per_minute(now: 1090.0)]).to eq([250, 0])
+    expect([described_class.per_second(now: 1030.0), described_class.per_second(now: 1090.0)]).to eq([4.2, 0.0])
+  end
+
+  it 'gives the most requests in any one second in the last minute' do
+    3.times { described_class.record(nil, now: 1000.2) }
+    7.times { described_class.record(nil, now: 1005.5) }
+    expect([described_class.busiest_second(now: 1010.0), described_class.busiest_second(now: 1100.0)]).to eq([7, 0])
   end
 
   it "doesn't keep anyone's address, only a hash of it" do
