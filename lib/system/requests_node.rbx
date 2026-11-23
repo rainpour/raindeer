@@ -25,6 +25,9 @@ module System
             <summary>
               <code>{entry.verb}</code>{" "}<strong>{entry.path}</strong>
               <small>{" "}{entry.status}{" · "}{entry.milliseconds}{" ms · "}{entry.events}{" events · "}{entry.seconds_ago}{" s ago"}</small>
+              <{ if: entry.visit_path }>
+                <a class="visit" href="{entry.visit_path}" role="button">{"Visit"}</a>
+              <{ :if }>
             </summary>
             <ul class="tree">
               <{ BranchFormatter branch=entry.root }>

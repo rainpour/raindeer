@@ -13,12 +13,17 @@ dirload(File.join(Dir.pwd, '/lib/system/formatters/intervals_formatter.rbx'))
 
 RSpec.describe System::RequestLog do
   # A request's tree of a request event and its response, made at a time in milliseconds and taking how long it took.
-  def tree(path, at:, took:, status: 200)
-    request = Low::Events::RequestEvent.new(request: Low::Support::RequestFactory.request(path:))
-    response = Low::Events::ResponseEvent.new(response: Protocol::HTTP::Response[status])
+  # Optionally the status it answered, the address it came from, its verb and whether it's still being answered.
+  def tree(path, at:, took:, **options)
+    http = Low::Support::RequestFactory.request(path:, verb: options.fetch(:verb, 'GET'))
+    http.headers.add('cf-connecting-ip', options[:from]) if options[:from]
+    request = Low::Events::RequestEvent.new(request: http)
+    response = Low::Events::ResponseEvent.new(response: Protocol::HTTP::Response[options.fetch(:status, 200)])
     request.instance_variable_set(:@created_at, at)
     response.instance_variable_set(:@created_at, at + took)
-    Low::Events::EventTree.new(request_id: path).tap { |each_tree| [request, response].each { each_tree.branch(event: it) } }
+    events = [request]
+    events << response if options.fetch(:answered, true)
+    Low::Events::EventTree.new(request_id: path).tap { |each_tree| events.each { each_tree.branch(event: it) } }
   end
 
   let(:now) { 200_000 }
@@ -40,6 +45,22 @@ RSpec.describe System::RequestLog do
 
   it 'gives the middle and the slowest response time' do
     expect([log.typical_milliseconds, log.slowest_milliseconds]).to eq([30, 80])
+  end
+
+  it 'counts the different addresses requests came from in the last 5 minutes' do
+    trees = { a: tree('/a', at: 199_000, took: 1, from: '203.0.113.7'), b: tree('/b', at: 198_000, took: 1, from: '203.0.113.7'),
+              c: tree('/c', at: 197_000, took: 1, from: '198.51.100.2'), d: tree('/d', at: -200_000, took: 1, from: '192.0.2.9') }
+    expect(described_class.new(event_trees: trees, now:).visitors).to eq(2)
+  end
+
+  it 'counts the requests still being answered' do
+    trees = { a: tree('/a', at: 199_000, took: 1), b: tree('/b', at: 199_500, took: 1, answered: false) }
+    expect(described_class.new(event_trees: trees, now:).answering).to eq(1)
+  end
+
+  it "links a GET to visit again but not a form's POST" do
+    trees = { a: tree('/shop', at: 199_000, took: 1), b: tree('/invite', at: 199_500, took: 1, verb: 'POST') }
+    expect(described_class.new(event_trees: trees, now:).entries.map(&:visit_path)).to eq([nil, '/shop'])
   end
 
   it 'leaves out trees an interval started' do

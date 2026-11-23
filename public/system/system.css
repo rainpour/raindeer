@@ -1,5 +1,11 @@
 /***** LAYOUT *****/
 
+/* Cards and other blocks on the system pages are spaced 10% tighter than Pico's default, so more fits on the dashboard. */
+:root {
+  --pico-block-spacing-vertical: calc(var(--pico-spacing) * 0.9);
+  --pico-block-spacing-horizontal: calc(var(--pico-spacing) * 0.9);
+}
+
 /* The header, content and footer keep to a readable width on wide screens, and off the edges on narrow ones. */
 header .container,
 main.container,
@@ -49,16 +55,19 @@ footer {
 
 /***** DASHBOARD *****/
 
-/* A number with what it counts, sized so values like "2 minutes" and "146 MB" fit on one line. */
+/* A number with what it counts. A long one like "1,234,567" shrinks to fit its card, four across. */
 .stat {
+  container-type: inline-size;
+
   .number {
     text-align: center;
-    font-size: 2.5rem;
+    font-size: min(2.25rem, 17cqi);
     font-weight: bold;
     white-space: nowrap;
   }
   footer {
     text-align: center;
+    font-size: 0.9em;
   }
 }
 
@@ -102,5 +111,36 @@ footer {
 
   .tree li {
     list-style: none;
+  }
+}
+
+/***** STATS *****/
+
+/* The dashboard's stats four across, two across on a phone. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--pico-grid-column-gap);
+  margin-bottom: var(--pico-spacing);
+
+  .stat {
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* A request's heading in a row, with its Visit button at the end before the arrow that opens it. */
+.request summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .visit {
+    margin-left: auto;
+    padding: 0.1rem 0.75rem;
+    font-size: 0.875rem;
   }
 }

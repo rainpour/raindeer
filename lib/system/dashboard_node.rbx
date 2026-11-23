@@ -12,32 +12,31 @@ module System
       ruby_stats
     end
 
+    # The stats are four across: who's here and how busy, how quickly it answers, memory, then the framework itself.
     def render(event:) # rubocop:disable Lint/UnusedMethodArgument
       <{ LayoutNode: }>
         <h1>{"Dashboard"}</h1>
 
-        <div class="grid">
-          <{ StatFormatter title='Nodes' stat=@node_count }>
-          <{ StatFormatter title='Events' stat=@event_count }>
+        <div class="stats">
           <{ StatFormatter title='Uptime' stat=@uptime }>
-        </div>
-
-        <div class="grid">
-          <{ StatFormatter title='Memory' stat=@memory }>
-          <{ StatFormatter title='Peak memory' stat=@peak }>
-          <{ StatFormatter title='Observed keys' stat=@keys }>
-        </div>
-
-        <div class="grid">
+          <{ StatFormatter title='Visitors in the last 5 minutes' stat=@visitors }>
           <{ StatFormatter title='Requests in the last minute' stat=@per_minute }>
+          <{ StatFormatter title='Answering now' stat=@answering }>
+
           <{ StatFormatter title='Typical response' stat=@typical }>
           <{ StatFormatter title='Slowest response' stat=@slowest }>
-        </div>
-
-        <div class="grid">
+          <{ StatFormatter title='Open connections' stat=@connections }>
           <{ StatFormatter title='Threads' stat=@threads }>
+
+          <{ StatFormatter title='Memory' stat=@memory }>
+          <{ StatFormatter title='Peak memory' stat=@peak }>
           <{ StatFormatter title='Live objects' stat=@objects }>
           <{ StatFormatter title='Garbage collections' stat=@collections }>
+
+          <{ StatFormatter title='Nodes' stat=@node_count }>
+          <{ StatFormatter title='Events' stat=@event_count }>
+          <{ StatFormatter title='Observed keys' stat=@keys }>
+          <{ StatFormatter title='Requests kept' stat=@kept }>
         </div>
 
         <{ if: @trend }>
@@ -71,12 +70,16 @@ module System
     def request_stats
       log = RequestLog.new
       @per_minute = log.per_minute
+      @visitors = log.visitors
+      @answering = log.answering
+      @kept = log.entries.size
       @typical = milliseconds(log.typical_milliseconds)
       @slowest = milliseconds(log.slowest_milliseconds)
     end
 
     def ruby_stats
       @threads = Thread.list.size
+      @connections = Low::ConnectionManager.open_count
       @objects = Numbers.delimited(GC.stat(:heap_live_slots))
       @collections = Numbers.delimited(GC.count)
     end
@@ -87,15 +90,15 @@ module System
       "#{Numbers.delimited(value)} ms"
     end
 
-    # How long the process has run, in its two largest units, like "2 days 3 hours" or "5 minutes".
+    # How long the process has run in its two largest units, short enough to fit a card, like "3 d 4 h" or "5 min".
     def uptime(seconds)
-      units = { 'day' => 86_400, 'hour' => 3600, 'minute' => 60 }
+      units = { 'd' => 86_400, 'h' => 3600, 'min' => 60 }
       parts = units.filter_map do |name, size|
         count = (seconds / size).floor
         seconds -= count * size
-        "#{count} #{name}#{'s' unless count == 1}" if count.positive?
+        "#{count} #{name}" if count.positive?
       end
-      return 'Under a minute' if parts.empty?
+      return '< 1 min' if parts.empty?
 
       parts.first(2).join(' ')
     end
