@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- A param that more than one route passes through, like `:slug` in `/shop/:slug` and `/shop/:slug/edit`, matches once, instead of once for each route, which sent its routes' events twice, like a form's `receive`, saving an upload twice
+
 ## 1.0.19
 
 ### Added

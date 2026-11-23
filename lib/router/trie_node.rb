@@ -22,9 +22,12 @@ module Rain
       @nodes[key]
     end
 
+    # A param is kept once, though more routes pass through it, like /users/:id and /users/:id/edit, or it'd match twice.
     def upsert_child(key: String)
+      return @nodes[key] if @nodes.key?(key)
+
       @params << key if key.start_with?(':')
-      @nodes[key] || @nodes[key] = TrieNode.new
+      @nodes[key] = TrieNode.new
     end
   end
 end

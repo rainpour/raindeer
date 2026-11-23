@@ -141,6 +141,11 @@ module Rain
               route_event = trie.match(request:).last # => /users/:id/edit
               expect(route_event).to have_attributes(actions: [:render, :get])
             end
+
+            it 'matches each route once, though two routes have the param' do
+              paths = trie.match(request:).map { |route_event| route_event.route.path }
+              expect(paths).to eq(['/users', '/users/:id', '/users/:id/edit'])
+            end
           end
         end
       end
