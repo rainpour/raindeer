@@ -90,11 +90,10 @@ PATH
 PATH
   remote: ../raindown
   specs:
-    raindown (0.25.3)
+    raindown (0.25.4)
       antlers (>= 1.5.1)
       commonmarker
       csv
-      curses (~> 1.7)
       dirload
       listen
       lowkey (>= 0.7.3)
@@ -113,7 +112,7 @@ PATH
 PATH
   remote: .
   specs:
-    raindeer (1.0.31)
+    raindeer (1.0.32)
       antlers (~> 1.5, >= 1.5.2)
       dirload (~> 0.7, >= 0.7.1)
       expressions (~> 0.4)
@@ -129,7 +128,7 @@ PATH
       paint
       plugs (~> 0.4)
       providers (~> 0.6)
-      raindown (>= 0.15)
+      raindown (>= 0.25.4)
       ruby-progressbar
       trees (~> 0.4)
 
@@ -166,7 +165,6 @@ GEM
       fiber-local (~> 1.1)
       json
     csv (3.3.7)
-    curses (1.7.0)
     diff-lcs (1.6.2)
     erb (6.0.7)
     ffi (1.17.4-aarch64-linux-gnu)
@@ -338,7 +336,6 @@ CHECKSUMS
   commonmarker (2.10.1-x86_64-linux-musl) sha256=afa9e0dc1fef554b7779d815a574d1cb602a9ff9b548dd8be80d66ac69f83866
   console (1.38.0) sha256=35b82f59130e95e9be6b832d9e539c8b3988fc192e4a8e9a86ab4922f44ad5de
   csv (3.3.7) sha256=15a3f16f6628da8664d455eb634e7f22031bcf53044923caf56975109e71b9f8
-  curses (1.7.0) sha256=c524ff30704bbd136d68d2731263b31edaf4f236b0cbb9b8dd6c802de3317057
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   dirload (0.7.1)
   erb (6.0.7) sha256=c5ca6dc25b0ef974a44dc8f59fe847577122483b1968a38dec305c60bf91ee92
@@ -395,8 +392,8 @@ CHECKSUMS
   providers (0.6.2)
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
-  raindeer (1.0.31)
-  raindown (0.25.3)
+  raindeer (1.0.32)
+  raindown (0.25.4)
   rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
