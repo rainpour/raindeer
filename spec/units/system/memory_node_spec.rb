@@ -25,7 +25,9 @@ RSpec.describe System::MemoryNode do
   end
 
   it 'keeps the last 3 hours of samples a minute apart' do
-    181.times { |minute| described_class.record(described_class::Sample.new(at: minute, megabytes: minute, keys: 1, objects: 1)) }
+    181.times do |minute|
+      described_class.record(described_class::Sample.new(at: minute, megabytes: minute, keys: 1, objects: 1, retained: 1))
+    end
     samples = described_class.samples
     expect([samples.size, samples.first.megabytes, samples.last.megabytes]).to eq([180, 1, 180])
   end

@@ -40,13 +40,13 @@ module System
       peak = [*MemoryNode.samples.map(&:megabytes), memory.megabytes].max
       [Stat.new(key: 'memory', title: 'Memory', value: "#{memory.megabytes} MB"),
        Stat.new(key: 'peak', title: 'Peak memory', value: "#{peak} MB"),
-       Stat.new(key: 'objects', title: 'Live objects', value: Numbers.delimited(GC.stat(:heap_live_slots))),
-       Stat.new(key: 'collections', title: 'Garbage collections', value: Numbers.delimited(GC.count))]
+       Stat.new(key: 'objects', title: 'Live objects', value: Numbers.delimited(memory.objects)),
+       Stat.new(key: 'retained', title: 'Retained objects', value: Numbers.delimited(memory.retained))]
     end
 
     def framework_row(memory)
       [Stat.new(key: 'nodes', title: 'Nodes', value: LowNode.count),
-       Stat.new(key: 'events', title: 'Events', value: LowEvent.count),
+       Stat.new(key: 'collections', title: 'Garbage collections', value: Numbers.delimited(GC.count)),
        Stat.new(key: 'keys', title: 'Observed keys', value: memory.keys),
        Stat.new(key: 'busiest', title: 'Busiest second', value: Traffic.busiest_second)]
     end

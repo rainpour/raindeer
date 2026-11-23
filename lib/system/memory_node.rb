@@ -2,12 +2,12 @@
 
 module System
   # The process's memory and how many keys Observers holds and how many objects Ruby holds, sampled each minute for the
-  # last 3 hours. The dashboard shows them so you can see if any keeps climbing. Keys or objects that climb with every
-  # request are a leak.
+  # last 3 hours. The dashboard shows them so you can see if any keeps climbing. Live objects rise and fall with each
+  # garbage collection. Retained objects have survived several, so when they keep climbing it's a leak.
   class MemoryNode < LowNode
     observe Interval[every_minute: 1]
 
-    Sample = Data.define(:at, :megabytes, :keys, :objects)
+    Sample = Data.define(:at, :megabytes, :keys, :objects, :retained)
 
     KEPT = 180
     STATUS = '/proc/self/status'
@@ -30,7 +30,8 @@ module System
       end
 
       def current
-        Sample.new(at: Time.now, megabytes:, keys: Observers::Keys.keys.size, objects: GC.stat(:heap_live_slots))
+        Sample.new(at: Time.now, megabytes:, keys: Observers::Keys.keys.size, objects: GC.stat(:heap_live_slots),
+                   retained: GC.stat(:old_objects))
       end
 
       # The memory the process holds now in megabytes. Linux has it in /proc and other systems like macOS give it to ps.

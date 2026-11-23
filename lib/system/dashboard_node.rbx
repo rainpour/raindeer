@@ -11,6 +11,7 @@ module System
       @megabytes = samples.map(&:megabytes)
       @key_counts = samples.map(&:keys)
       @object_counts = samples.map(&:objects)
+      @retained_counts = samples.map(&:retained)
     end
 
     # The stats four across, in Stats' order, which refresh each second, then the trends and intervals.
@@ -30,6 +31,7 @@ module System
             <{ TrendFormatter title='Memory in MB each minute' values=@megabytes }>
             <{ TrendFormatter title='Observed keys each minute' values=@key_counts }>
             <{ TrendFormatter title='Live objects each minute' values=@object_counts }>
+            <{ TrendFormatter title='Retained objects each minute' values=@retained_counts }>
           </div>
         <{ :if }>
 
