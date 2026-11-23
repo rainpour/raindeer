@@ -85,6 +85,10 @@ RSpec.describe Rain::Router do
           expect(WildcardObserver).to have_received(:render).with({ event: an_instance_of(Rain::Events::WildcardEvent) })
         end
 
+        it "lists what observes '/*' as the wildcard event's observers" do
+          expect(Rain::Events::WildcardEvent.observers.to_a.map(&:object)).to include(WildcardObserver)
+        end
+
         context 'with a form' do
           let(:request) do
             Low::Support::RequestFactory.request(path: '/anything', verb: 'POST', body: 'nose=red')

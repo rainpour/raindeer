@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The system header shows a bigger deer without the words Raindeer System
+- The Events page lists the nodes that observe "/*" as the wildcard event's observers. `WildcardEvent.observers` answers for its "/*" key
 
 ### Removed
 

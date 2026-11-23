@@ -7,7 +7,7 @@ class ObserversFormatter < LowNode
       routes_count = Providers['rain.router'].routes.count
       @observers = ["#{routes_count} routes"]
     else
-      @observers = Observers[observer_key].map { |observer| name(observer.object) }
+      @observers = observer_key.observers.to_a.map { |observer| name(observer.object) }
     end
   end
     
