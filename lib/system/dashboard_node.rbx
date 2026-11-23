@@ -16,7 +16,7 @@ module System
     # The stats four across, in Stats' order, which refresh each second, then the trends and intervals.
     def render(event:) # rubocop:disable Lint/UnusedMethodArgument
       <{ LayoutNode: }>
-        <h1>{"Dashboard"}</h1>
+        <p class="lede">{"How the app is doing now. The numbers refresh each second."}</p>
 
         <div class="stats">
           <{ for: stat in: @stats }>
@@ -25,13 +25,18 @@ module System
         </div>
 
         <{ if: @trend }>
-          <{ TrendFormatter title='Memory in MB each minute' values=@megabytes }>
-          <{ TrendFormatter title='Observed keys each minute' values=@key_counts }>
-          <{ TrendFormatter title='Live objects each minute' values=@object_counts }>
+          <h2>{"Trends"}</h2>
+          <div class="trends">
+            <{ TrendFormatter title='Memory in MB each minute' values=@megabytes }>
+            <{ TrendFormatter title='Observed keys each minute' values=@key_counts }>
+            <{ TrendFormatter title='Live objects each minute' values=@object_counts }>
+          </div>
         <{ :if }>
 
         <h2>{"Intervals"}</h2>
-        <{ IntervalsFormatter }>
+        <div class="panel">
+          <{ IntervalsFormatter }>
+        </div>
       <{ :LayoutNode }>
     end
   end

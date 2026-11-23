@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- The system pages have Raindeer's deer in a bordered header that links to the app's home page, with the open page highlighted in the menu instead of a heading
+- Cards, charts, tables and requests share one bordered card style in light and dark, with quieter labels and the version in the footer
+- The Events page names an observing object by its class instead of its address in memory
+
 ## 1.0.30
 
 ### Added

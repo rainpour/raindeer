@@ -13,8 +13,7 @@ module System
 
     def render(event:) # rubocop:disable Lint/UnusedMethodArgument
       <{ LayoutNode: }>
-        <h1>{"Requests"}</h1>
-        <p>{"The last 100 requests, newest first. Open one to see every event it caused."}</p>
+        <p class="lede">{"The last 100 requests, newest first. Open one to see every event it caused."}</p>
 
         <{ if: @empty }>
           <p>{"No requests yet."}</p>

@@ -7,7 +7,7 @@ class ObserversFormatter < LowNode
       routes_count = Providers['rain.router'].routes.count
       @observers = ["#{routes_count} routes"]
     else
-      @observers = Observers[observer_key].map { it.object }
+      @observers = Observers[observer_key].map { |observer| name(observer.object) }
     end
   end
     
@@ -17,5 +17,14 @@ class ObserversFormatter < LowNode
         <li>{ observer }</li>
       <{ :for }>
     </ul>
+  end
+
+  private
+
+  # A class by its name, and an object like a FileServer by its class's, rather than its address in memory.
+  def name(object)
+    return object.name if object.is_a?(Module)
+
+    object.class.name
   end
 end

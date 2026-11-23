@@ -10,26 +10,28 @@ module System
 
     def render(event:)
       <{ LayoutNode: }>
-        <h1>{"Routes"}</h1>
+        <p class="lede">{"Every route and what observes it."}</p>
 
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">HTTP Verbs</th>
-              <th scope="col">Route</th>
-              <th scope="col">Observers</th>
-            </tr>
-          </thead>
-          <tbody>
-            <{ for: path, route in: @routes }>
+        <div class="panel">
+          <table>
+            <thead>
               <tr>
-                <td><{ LabelFormatter labels=route.verbs }></td>
-                <td>{route.path}</td>
-                <td><{ ObserversFormatter observer_key=route.path }></td>
+                <th scope="col">HTTP Verbs</th>
+                <th scope="col">Route</th>
+                <th scope="col">Observers</th>
               </tr>
-            <{ :for }>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <{ for: path, route in: @routes }>
+                <tr>
+                  <td><{ LabelFormatter labels=route.verbs }></td>
+                  <td>{route.path}</td>
+                  <td><{ ObserversFormatter observer_key=route.path }></td>
+                </tr>
+              <{ :for }>
+            </tbody>
+          </table>
+        </div>
       <{ :LayoutNode }>
     end
   end

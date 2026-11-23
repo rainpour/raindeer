@@ -1,90 +1,212 @@
 /***** LAYOUT *****/
 
-/* Cards and other blocks on the system pages are spaced 10% tighter than Pico's default, so more fits on the dashboard. */
+/* Cards and other blocks are spaced 10% tighter than Pico's default so more fits, and they share one border, radius
+   and shadow so the pages look of a piece in light and dark. */
 :root {
   --pico-block-spacing-vertical: calc(var(--pico-spacing) * 0.9);
   --pico-block-spacing-horizontal: calc(var(--pico-spacing) * 0.9);
+  --system-border: 1px solid var(--pico-muted-border-color);
+  --system-radius: 0.75rem;
+  --system-shadow: 0 1px 2px rgb(0 0 0 / 12%), 0 4px 16px rgb(0 0 0 / 6%);
 }
 
 /* The header, content and footer keep to a readable width on wide screens, and off the edges on narrow ones. */
-header .container,
+.system-header .container,
 main.container,
-footer .container {
+.system-footer .container {
   max-width: 1000px;
   padding-inline: var(--pico-spacing);
 }
 
-header {
-  background-color: #000;
+main.container {
+  padding-block: 2rem 1rem;
+}
+
+/* The deer and the name on the left and the pages on the right, with the open page highlighted. */
+.system-header {
+  border-bottom: var(--system-border);
+  background-color: var(--pico-card-background-color);
+  box-shadow: var(--system-shadow);
 
   .container {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    height: 30px;
+    gap: 0.5rem 1rem;
+    padding-block: 0.6rem;
   }
 
-  #favicon,
-  #favicon img {
-    height: 100%;
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--pico-contrast);
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-decoration: none;
+
+    small {
+      margin-left: 0.4rem;
+      color: var(--pico-muted-color);
+      font-weight: 400;
+    }
   }
 
-  #navbar {
-    li {
-      a {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        padding: 0 2rem;
-      }
+  nav ul {
+    gap: 0.25rem;
+    margin: 0;
+  }
+
+  nav li {
+    padding: 0;
+  }
+
+  nav a {
+    margin: 0;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    color: var(--pico-muted-color);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--pico-contrast);
+      background-color: var(--pico-secondary-focus);
+    }
+
+    &[aria-current="true"] {
+      color: var(--pico-primary-inverse);
+      background-color: var(--pico-primary-background);
     }
   }
 }
 
-footer {
-  margin-top: 2rem;
-  border-top: 1px solid #000;
+/* The version on the left and Raindeer's links on the right. */
+.system-footer {
+  margin-top: 3rem;
+  border-top: var(--system-border);
+  color: var(--pico-muted-color);
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1rem;
+  }
+
   ul {
     display: flex;
-    justify-content: center;
-    li {
-      margin-left: 2rem;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    margin: 0;
+    list-style: none;
+  }
+
+  a {
+    color: var(--pico-muted-color);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--pico-contrast);
     }
   }
+}
+
+/* A line under the menu saying what's on the page, which the menu's highlighted page names. */
+.lede {
+  margin-bottom: 1.5rem;
+  color: var(--pico-muted-color);
+}
+
+h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+/***** CARDS *****/
+
+/* Stats, trends, tables and requests all sit on the same bordered card. */
+.stat,
+.trend,
+.panel,
+.request {
+  border: var(--system-border);
+  border-radius: var(--system-radius);
+  background-color: var(--pico-card-background-color);
+  box-shadow: var(--system-shadow);
+}
+
+/* A label under a number or a chart, quieter than what it labels. */
+.stat footer,
+.trend footer,
+.panel th {
+  color: var(--pico-muted-color);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /***** DASHBOARD *****/
 
-/* A number with what it counts. A long one like "1,234,567" shrinks to fit its card, four across. */
-.stat {
-  container-type: inline-size;
+/* The stats four across, two across on a phone. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
 
-  .number {
-    text-align: center;
-    font-size: min(2.25rem, 17cqi);
-    font-weight: bold;
-    white-space: nowrap;
-  }
-  footer {
-    text-align: center;
-    font-size: 0.9em;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/***** TRENDS *****/
+/* A number with what it counts. A long one like "1,234,567" shrinks to fit its card. */
+.stat {
+  container-type: inline-size;
+  margin: 0;
+  text-align: center;
 
-/* A number over time, like memory each minute, as a line across the dashboard. */
+  .number {
+    font-size: min(2.25rem, 17cqi);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  footer {
+    margin-top: 0.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+}
+
+/* The trend lines, one under another. */
+.trends {
+  display: grid;
+  gap: 0.75rem;
+}
+
+/* A number over time, like memory each minute, with the area under its line filled to the bottom of its chart. */
 .trend {
+  margin: 0;
+
   svg {
     display: block;
     width: 100%;
     height: 80px;
   }
 
-  /* The area under the line, down to the bottom of the chart. */
   polygon {
     fill: var(--pico-primary-background);
-    opacity: 0.2;
+    opacity: 0.18;
   }
 
   polyline {
@@ -93,54 +215,111 @@ footer {
     stroke-width: 2;
     vector-effect: non-scaling-stroke;
   }
+
+  footer {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+}
+
+/***** TABLES *****/
+
+/* A table on a card, its rows divided by hairlines and its last row without one. */
+.panel {
+  overflow-x: auto;
+  padding: 0.25rem 1rem;
+
+  table {
+    margin: 0;
+  }
+
+  th,
+  td {
+    padding-block: 0.65rem;
+    background: none;
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  /* What observes an event or route, one to a line. */
+  td ul {
+    margin: 0;
+    padding: 0;
+
+    li {
+      margin: 0;
+      list-style: none;
+    }
+  }
+}
+
+/* A route's HTTP verbs as small pills. */
+.labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+
+  li {
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    background-color: var(--pico-secondary-background);
+    color: var(--pico-secondary-inverse);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
 }
 
 /***** REQUESTS *****/
 
-/* A request's line, which opens to show its event tree, each event indented under the one that caused it. */
+/* Each request is a card whose heading opens to show its event tree, each event indented under the one that caused it. */
 .request {
-  summary small {
-    color: var(--pico-muted-color);
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 1rem;
+
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+
+    code {
+      font-size: 0.75rem;
+    }
+
+    small {
+      color: var(--pico-muted-color);
+    }
+
+    /* At the end of the heading, before the arrow that opens it. */
+    .visit {
+      margin-left: auto;
+      padding: 0.15rem 0.75rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  &[open] summary {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.6rem;
+    border-bottom: var(--system-border);
   }
 
   .tree,
   .tree ul {
+    margin: 0;
     padding-left: 1.25rem;
-    border-left: 1px solid var(--pico-muted-border-color);
+    border-left: 2px solid var(--pico-muted-border-color);
   }
 
   .tree li {
+    margin: 0.35rem 0;
     list-style: none;
-  }
-}
-
-/***** STATS *****/
-
-/* The dashboard's stats four across, two across on a phone. */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--pico-grid-column-gap);
-  margin-bottom: var(--pico-spacing);
-
-  .stat {
-    margin: 0;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* A request's heading in a row, with its Visit button at the end before the arrow that opens it. */
-.request summary {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  .visit {
-    margin-left: auto;
-    padding: 0.1rem 0.75rem;
-    font-size: 0.875rem;
   }
 }

@@ -11,26 +11,28 @@ module System
 
     def render(event:)
       <{ LayoutNode: }>
-        <h1>{"Events"}</h1>
+        <p class="lede">{"Every kind of event and what observes it."}</p>
 
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Event</th>
-              <th scope="col">Observers</th>
-            </tr>
-          </thead>
-          <tbody>
-            <{ for: observer_key in: @event_types }>
+        <div class="panel">
+          <table>
+            <thead>
               <tr>
-                <td>{observer_key}</td>
-                <td>
-                  <{ ObserversFormatter observer_key=observer_key }>
-                </td>
+                <th scope="col">Event</th>
+                <th scope="col">Observers</th>
               </tr>
-            <{ :for }>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <{ for: observer_key in: @event_types }>
+                <tr>
+                  <td>{observer_key}</td>
+                  <td>
+                    <{ ObserversFormatter observer_key=observer_key }>
+                  </td>
+                </tr>
+              <{ :for }>
+            </tbody>
+          </table>
+        </div>
       <{ :LayoutNode }>
     end
   end
