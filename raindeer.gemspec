@@ -53,6 +53,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'observers', '~> 1.1', '>= 1.1.2'
   spec.add_dependency 'plugs', '~> 0.4'
   spec.add_dependency 'providers', '~> 0.6'
-  spec.add_dependency 'raindown', '>= 0.15'
+  spec.add_dependency 'raindown', '>= 0.25.4'
   spec.add_dependency 'trees', '~> 0.4'
 end

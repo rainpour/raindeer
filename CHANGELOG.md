@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.0.32
 
+### Changed
+
+- Needs Raindown 0.25.4 which no longer depends on curses so Raindeer apps don't compile it
+
 ### Added
 
 - The dashboard shows retained objects as a stat and a trend line. These have survived several garbage collections so they only climb when something holds on to them
