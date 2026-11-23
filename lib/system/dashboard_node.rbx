@@ -17,8 +17,6 @@ module System
     # The stats four across, in Stats' order, which refresh each second, then the trends and intervals.
     def render(event:) # rubocop:disable Lint/UnusedMethodArgument
       <{ LayoutNode: }>
-        <p class="lede">{"How the app is doing now. The numbers refresh each second."}</p>
-
         <div class="stats">
           <{ for: stat in: @stats }>
             <{ StatFormatter title=stat.title stat=stat.value key=stat.key }>

@@ -22,7 +22,7 @@ main.container {
   padding-block: 2rem 1rem;
 }
 
-/* The deer and the name on the left and the pages on the right, with the open page highlighted. */
+/* The deer on the left and the pages on the right, with the open page highlighted. */
 .system-header {
   border-bottom: var(--system-border);
   background-color: var(--pico-card-background-color);
@@ -39,18 +39,6 @@ main.container {
 
   .brand {
     display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    color: var(--pico-contrast);
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-decoration: none;
-
-    small {
-      margin-left: 0.4rem;
-      color: var(--pico-muted-color);
-      font-weight: 400;
-    }
   }
 
   nav ul {
