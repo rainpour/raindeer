@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- The dashboard's numbers refresh each second from `/system/stats` while the page is in view
+
+### Changed
+
+- Visitors is called "Visitors (5 min)"
+- The system pages' own requests, like the dashboard refreshing itself, aren't counted as traffic or shown on the Requests page
+- Needs LowNode 0.5.14, so a JSON response shows its request as answered
+
 ## 1.0.29
 
 ### Changed

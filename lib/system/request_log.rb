@@ -2,7 +2,8 @@
 
 module System
   # The requests the event pool still holds, which is its last 100, newest first. Each is read from its event tree, so
-  # nothing extra is kept to show them. Trees an interval started aren't requests and are left out.
+  # nothing extra is kept to show them. Trees an interval started aren't requests, and the system pages' own requests,
+  # like the dashboard refreshing each second, aren't the app's, so both are left out.
   class RequestLog
     # A request with what it answered and how long it took. Its tree is every event it caused, from the request down.
     Entry = Data.define(:verb, :path, :status, :events, :milliseconds, :seconds_ago, :root) do
@@ -38,6 +39,7 @@ module System
     def entry(tree, now)
       root = tree.root_event
       return unless root.is_a?(Low::Events::RequestEvent)
+      return if root.request.path.to_s.start_with?('/system')
 
       events = tree.sequence.dup
       Entry.new(verb: root.request.method, path: root.request.path, status: status(events), events: events.size,

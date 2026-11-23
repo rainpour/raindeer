@@ -55,6 +55,11 @@ RSpec.describe System::RequestLog do
     expect(described_class.new(event_trees: trees, now:).entries.map(&:visit_path)).to eq([nil, '/shop'])
   end
 
+  it 'leaves out the system pages\' own requests, like the dashboard refreshing itself' do
+    trees = { a: tree('/system/stats', at: 199_000, took: 1), b: tree('/shop', at: 199_500, took: 1) }
+    expect(described_class.new(event_trees: trees, now:).entries.map(&:path)).to eq(['/shop'])
+  end
+
   it 'leaves out trees an interval started' do
     interval_tree = Low::Events::EventTree.new(request_id: 'tick').tap { it.branch(event: Low::Loop::Interval[every_second: 1]) }
     expect(described_class.new(event_trees: { tick: interval_tree }, now:).entries).to eq([])
