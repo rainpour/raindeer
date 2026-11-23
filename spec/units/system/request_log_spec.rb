@@ -8,6 +8,8 @@ require_relative '../../../lib/raindeer/integrations'
 require_relative '../../factories/request_factory'
 
 dirload(File.join(Dir.pwd, '/lib/system/request_log.rb'))
+dirload(File.join(Dir.pwd, '/lib/system/visitor_address.rb'))
+dirload(File.join(Dir.pwd, '/lib/system/traffic.rb'))
 dirload(File.join(Dir.pwd, '/lib/system/numbers.rb'))
 dirload(File.join(Dir.pwd, '/lib/system/formatters/intervals_formatter.rbx'))
 
@@ -39,18 +41,8 @@ RSpec.describe System::RequestLog do
       .to eq([%w[/newer /new /old], 'GET', 200, 2, 80, 1])
   end
 
-  it 'counts the requests in the last minute' do
-    expect(log.per_minute).to eq(2)
-  end
-
   it 'gives the middle and the slowest response time' do
     expect([log.typical_milliseconds, log.slowest_milliseconds]).to eq([30, 80])
-  end
-
-  it 'counts the different addresses requests came from in the last 5 minutes' do
-    trees = { a: tree('/a', at: 199_000, took: 1, from: '203.0.113.7'), b: tree('/b', at: 198_000, took: 1, from: '203.0.113.7'),
-              c: tree('/c', at: 197_000, took: 1, from: '198.51.100.2'), d: tree('/d', at: -200_000, took: 1, from: '192.0.2.9') }
-    expect(described_class.new(event_trees: trees, now:).visitors).to eq(2)
   end
 
   it 'counts the requests still being answered' do
@@ -84,5 +76,53 @@ end
 RSpec.describe System::Numbers do
   it 'puts commas between thousands' do
     expect([7, 1234, 591_812, 1_234_567].map { described_class.delimited(it) }).to eq(%w[7 1,234 591,812 1,234,567])
+  end
+end
+
+RSpec.describe System::Traffic do
+  before do
+    described_class.instance_variable_set(:@seen, {})
+    described_class.instance_variable_set(:@requests, Hash.new(0))
+    described_class.instance_variable_set(:@forgot_at, nil)
+  end
+
+  it 'counts each different address in the last 5 minutes, however many requests there are' do
+    150.times { |index| described_class.record("203.0.113.#{index % 120}", now: 1000.0) }
+    described_class.record('198.51.100.2', now: 1000.0)
+    expect(described_class.visitors(now: 1001.0)).to eq(121)
+  end
+
+  it 'forgets a visitor 5 minutes after it was last seen' do
+    described_class.record('203.0.113.7', now: 1000.0)
+    described_class.record('198.51.100.2', now: 1200.0)
+    expect([described_class.visitors(now: 1250.0), described_class.visitors(now: 1350.0)]).to eq([2, 1])
+  end
+
+  it 'counts every request in the last minute, past the event pool\'s 100' do
+    250.times { |index| described_class.record(nil, now: 1000.0 + (index * 0.1)) }
+    expect([described_class.per_minute(now: 1030.0), described_class.per_minute(now: 1090.0)]).to eq([250, 0])
+  end
+
+  it "doesn't keep anyone's address, only a hash of it" do
+    described_class.record('203.0.113.7', now: 1000.0)
+    expect(described_class.instance_variable_get(:@seen).keys.first).not_to include('203.0.113.7')
+  end
+
+  it 'passes each request on so the next observer answers it' do
+    request = Low::Support::RequestFactory.request(path: '/')
+    request.headers.add('cf-connecting-ip', '203.0.113.7')
+    expect([described_class.request(event: Low::Events::RequestEvent.new(request:)), described_class.visitors]).to eq([nil, 1])
+  end
+end
+
+RSpec.describe System::VisitorAddress do
+  def headers(pairs)
+    Protocol::HTTP::Headers.new.tap { |list| pairs.each { |name, value| list.add(name, value) } }
+  end
+
+  it "takes Cloudflare's address first, then the visitor's from x-forwarded-for" do
+    expect([described_class.from(headers('cf-connecting-ip' => '203.0.113.7', 'x-forwarded-for' => '10.0.0.1')),
+            described_class.from(headers('x-forwarded-for' => '198.51.100.2, 10.0.0.1')),
+            described_class.from(headers('accept' => 'text/html'))]).to eq(['203.0.113.7', '198.51.100.2', nil])
   end
 end

@@ -62,7 +62,9 @@ module Rain
 
     # A request from another site's page is turned away before anything else answers it.
     require_relative '../security/cross_origin_protection'
-    Low::Events::RequestEvent.define { |observers| [Rain::CrossOriginProtection, raindeer_files, *observers] }
+    # With the system pages on, each request is counted for the dashboard first, before anything can answer it.
+    traffic = System::Traffic if config.system_mode
+    Low::Events::RequestEvent.define { |observers| [*traffic, Rain::CrossOriginProtection, raindeer_files, *observers] }
     low_loop
   end
 end

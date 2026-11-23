@@ -69,8 +69,8 @@ module System
     # How busy the app is and how quickly it answers, from the requests the event pool still holds.
     def request_stats
       log = RequestLog.new
-      @per_minute = log.per_minute
-      @visitors = log.visitors
+      @per_minute = Traffic.per_minute
+      @visitors = Traffic.visitors
       @answering = log.answering
       @kept = log.entries.size
       @typical = milliseconds(log.typical_milliseconds)
