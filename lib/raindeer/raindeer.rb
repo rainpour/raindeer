@@ -9,5 +9,9 @@ module Raindeer
     def pages
       Providers['rain.pages']
     end
+
+    def config
+      Providers['rain.config']
+    end
   end
 end

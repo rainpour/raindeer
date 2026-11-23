@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+- `system_mode` turns the system pages at `/system` on or off, with `RAIN_SYSTEM` too. They're on while debugging unless it's set
+- The dashboard shows memory and peak memory and observed keys and uptime, with a line of each minute's memory and keys for the last 3 hours from an `Interval`
+
+### Changed
+
+- Needs Observers 1.1.2, which doesn't keep every request's event tree in memory
+
 ## 1.0.21
 
 ### Added

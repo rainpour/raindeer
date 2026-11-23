@@ -22,10 +22,15 @@ module Rain
     web_root: ENV.fetch('RAIN_WEB_ROOT', nil),
     debug_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_DEBUG', nil)),
     matrix_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MATRIX', nil)),
-    mirror_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MIRROR', nil))
+    mirror_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_MIRROR', nil)),
+    system_mode: ConfigLoader.parse_boolean(ENV.fetch('RAIN_SYSTEM', nil))
   }
   config_path = File.expand_path('config/config.yaml', Dir.pwd)
   config = ConfigLoader.load(config_path, env)
+  # The system pages at /system are on while debugging unless a setting says otherwise.
+  config.system_mode = config.debug_mode if config.system_mode.nil?
+
+  Providers.define('rain.config') { config }
 
   require_relative '../translations/translations'
   Translations.load(source_locale: config.source_locale)
