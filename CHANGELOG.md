@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- The gem includes `public/system`, so a site using the released gem gets the system pages' styles. 1.0.24 served them only from a checkout
+
 ## 1.0.24
 
 ### Changed

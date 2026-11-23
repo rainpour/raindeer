@@ -25,9 +25,10 @@ Gem::Specification.new do |spec|
   spec.metadata['bug_tracker_uri'] = 'https://github.com/raindeer-rb/raindeer/issues'
   spec.metadata['mailing_list_uri'] = 'https://www.rubyforum.org/tag/raindeer'
 
-  # Specify which files should be added to the gem when it is released.
+  # Specify which files should be added to the gem when it is released. public/system has the files Raindeer serves
+  # itself, like the system pages' styles.
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
-    Dir.glob('lib/**/*').select { |f| File.file?(f) }
+    Dir.glob(['lib/**/*', 'public/system/**/*']).select { |f| File.file?(f) }
   end
   spec.require_paths = ['lib']
 
