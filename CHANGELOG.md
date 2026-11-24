@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.44
+
+### Added
+
+- Sites. List hosts under `sites` in `config.yaml` with their region and language. Every event made from a request has `event.site` with its host and origin and region, and `event.site.alternates` for `hreflang` links
+- `event.locale` with the response's language and the visitor's region. The region is the site's or else the country in Cloudflare's `CF-IPCountry` header
+
+### Changed
+
+- A request without a language there's a translation for is rendered in its site's language, which is the `source_locale` unless the site sets another
+
 ## 1.0.43
 
 ### Changed

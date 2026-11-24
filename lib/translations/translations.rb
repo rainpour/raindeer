@@ -22,11 +22,12 @@ module Rain
       @source_locale || DEFAULT_SOURCE_LOCALE
     end
 
-    # The templates' own language can be requested too, so "en,es;q=0.5" renders English templates as written.
-    def negotiate(accept_language:, locales: Antlers::Translations.locales)
+    # The templates' own language can be requested too, so "en,es;q=0.5" renders English templates as written. Without a
+    # language there's a translation for, it's the default, like a site's own language.
+    def negotiate(accept_language:, locales: Antlers::Translations.locales, default: source_locale)
       locales = [source_locale, *locales.reject { it.casecmp?(source_locale) }]
 
-      requested_locale(accept_language:, locales:) || source_locale
+      requested_locale(accept_language:, locales:) || default
     end
 
     # The first language in "es-ES,es;q=0.9,en;q=0.8" that has a locale, preferring higher "q" values.

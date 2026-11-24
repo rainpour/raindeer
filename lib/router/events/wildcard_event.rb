@@ -4,6 +4,7 @@ require 'lowevent'
 require_relative 'body'
 require_relative 'cookies'
 require_relative 'query'
+require_relative 'sites'
 
 module Rain
   module Events
@@ -14,6 +15,7 @@ module Rain
       include Body
       include Cookies
       include Query
+      include Sites
 
       attr_reader :route, :params, :request
 

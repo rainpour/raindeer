@@ -8,6 +8,7 @@ require_relative 'http'
 require_relative 'route'
 require_relative 'trie'
 require_relative '../translations/translations'
+require_relative 'events/sites'
 
 module Rain
   # Defines routes and routes requests to a matching route event.
@@ -49,8 +50,7 @@ module Rain
     end
 
     def request(event: RequestEvent)
-      accept_language = event.request.headers['accept-language']&.join(',')
-      locale = Rain::Translations.negotiate(accept_language:)
+      locale = Rain::Locale.from_request(event.request, site: Rain::Site.from_request(event.request)).language
 
       response_event = Antlers::Translations.with_locale(locale) do
         respond(request: event.request)
