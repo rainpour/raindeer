@@ -42,9 +42,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'dirload', '~> 0.7', '>= 0.7.1'
   spec.add_dependency 'lowdata', '~> 0.4', '>= 0.4.4'
-  spec.add_dependency 'lowevent', '~> 0.8', '>= 0.8.7'
+  spec.add_dependency 'lowevent', '~> 0.8', '>= 0.8.8'
   spec.add_dependency 'lowkey', '~> 0.7', '>= 0.7.4'
-  spec.add_dependency 'lowloop', '~> 0.8', '>= 0.8.14'
+  spec.add_dependency 'lowloop', '~> 0.8', '>= 0.8.15'
   spec.add_dependency 'lownode', '~> 0.5', '>= 0.5.14'
   spec.add_dependency 'lowtype', '>= 1.6.2'
 

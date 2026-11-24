@@ -54,10 +54,9 @@ module Rain
     end
 
     require 'lowloop'
-    # The system pages' own requests and interval ticks go in a buffer of their own so they never push the app's out.
+    # The system pages' own requests go in a buffer of their own like interval ticks so they never push the app's out.
     Providers['low.event.pool'].keep_apart do |event|
-      event.is_a?(Low::Loop::Interval) ||
-        (event.is_a?(Low::Events::RequestEvent) && event.request.path.to_s.start_with?('/system'))
+      event.is_a?(Low::Events::RequestEvent) && event.request.path.to_s.start_with?('/system')
     end
     low_loop = LowLoop.new(config:, router: Providers['rain.router'], renderer: Providers['rain.matrix'])
 
