@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.34
+
+### Added
+
+- The dashboard's bar and the request trees show the time each node takes to render and each query takes to run. Each is an event in its request's tree now
+
+### Changed
+
+- Needs LowEvent 0.8.6 and Antlers 1.5.8 and LowData 0.4.4 and LowLoop 0.8.14
+
 ## 1.0.33
 
 ### Added
