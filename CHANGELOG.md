@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The system header shows a bigger deer without the words Raindeer System
 - The Events page lists the nodes that observe "/*" as the wildcard event's observers. `WildcardEvent.observers` answers for its "/*" key
+- The Events page lists every node that observes a route as the route event's observers instead of counting routes. `RouteEvent.observers` gathers them across the router's routes without "/*"
 
 ### Removed
 

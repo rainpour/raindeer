@@ -12,6 +12,14 @@ module Rain
 
       attr_reader :route, :params, :request
 
+      # Nodes observe each route's path rather than this class so they're who observes it once each across the routes.
+      def self.observers(key = nil)
+        return super if key
+
+        paths = Providers['rain.router'].routes.keys - [WildcardEvent::KEY]
+        paths.flat_map { |path| super(path).to_a }.uniq(&:object)
+      end
+
       def initialize(route:, actions: [], params: Hash | nil, request: nil)
         super(key: route.path, actions:)
 
