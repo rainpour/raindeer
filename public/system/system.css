@@ -1,8 +1,9 @@
 /***** LAYOUT *****/
 
-/* Cards and other blocks are spaced 10% tighter than Pico's default so more fits, and they share one border, radius
-   and shadow so the pages look of a piece in light and dark. */
+/* Text and cards and other blocks are 10% smaller and tighter than Pico's default so more fits, and they share one
+   border, radius and shadow so the pages look of a piece in light and dark. The text keeps Pico's growth on wide screens. */
 :root {
+  font-size: calc(var(--pico-font-size) * 0.9);
   --pico-block-spacing-vertical: calc(var(--pico-spacing) * 0.9);
   --pico-block-spacing-horizontal: calc(var(--pico-spacing) * 0.9);
   --system-border: 1px solid var(--pico-muted-border-color);
