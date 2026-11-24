@@ -17,7 +17,7 @@ module Rain
         return super if key
 
         paths = Providers['rain.router'].routes.keys - [WildcardEvent::KEY]
-        paths.flat_map { |path| super(path).to_a }.uniq(&:object)
+        Observers.of_keys { |each_key| paths.include?(each_key) }
       end
 
       def initialize(route:, actions: [], params: Hash | nil, request: nil)

@@ -42,15 +42,15 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'dirload', '~> 0.7', '>= 0.7.1'
   spec.add_dependency 'lowdata', '~> 0.4', '>= 0.4.1'
-  spec.add_dependency 'lowevent', '~> 0.8', '>= 0.8.4'
+  spec.add_dependency 'lowevent', '~> 0.8', '>= 0.8.5'
   spec.add_dependency 'lowkey', '~> 0.7', '>= 0.7.4'
-  spec.add_dependency 'lowloop', '~> 0.8', '>= 0.8.12'
+  spec.add_dependency 'lowloop', '~> 0.8', '>= 0.8.13'
   spec.add_dependency 'lownode', '~> 0.5', '>= 0.5.14'
   spec.add_dependency 'lowtype', '>= 1.6.2'
 
   spec.add_dependency 'antlers', '~> 1.5', '>= 1.5.2'
   spec.add_dependency 'expressions', '~> 0.4'
-  spec.add_dependency 'observers', '~> 1.1', '>= 1.1.2'
+  spec.add_dependency 'observers', '~> 1.1', '>= 1.1.3'
   spec.add_dependency 'plugs', '~> 0.4'
   spec.add_dependency 'providers', '~> 0.6'
   spec.add_dependency 'raindown', '>= 0.25.4'
