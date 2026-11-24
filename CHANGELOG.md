@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.45
+
+### Changed
+
+- The system dashboard shows actions per second in place of answering now. It counts every event that runs, like requests and node renders and data queries and intervals, including the system pages' own
+
 ## 1.0.44
 
 ### Added
