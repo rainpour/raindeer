@@ -296,11 +296,25 @@ h2 {
     white-space: nowrap;
   }
 
+  /* Pico pulls an article's footer into its padding, so this keeps the card's padding under the title. A title that
+     links, like the slowest response to its request, stays grey until it's pointed at. */
   footer {
     margin-top: 0.25rem;
+    margin-bottom: 0;
     padding: 0;
     border: 0;
     background: none;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible,
+      &:active {
+        color: var(--pico-primary);
+      }
+    }
   }
 }
 

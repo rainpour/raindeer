@@ -63,8 +63,8 @@ RSpec.describe System::RequestLog do
     expect([log.typical_milliseconds, log.slowest_milliseconds]).to eq([30, 80])
   end
 
-  it 'gives the slowest request with its place on the requests page' do
-    expect([log.slowest.path, log.slowest.anchor]).to eq(['/newer', "request-#{trees[:c].root_event.object_id}"])
+  it 'gives the slowest request' do
+    expect(log.slowest.path).to eq('/newer')
   end
 
   it "links a GET to visit again but not a form's POST" do

@@ -19,10 +19,3 @@ async function refreshStats() {
 }
 
 if (numbers.length > 0) setInterval(refreshStats, 1000);
-
-// Opens the request a link went to, like the dashboard's slowest response.
-const linked = location.hash && document.getElementById(location.hash.slice(1));
-if (linked instanceof HTMLDetailsElement) {
-  linked.open = true;
-  linked.scrollIntoView();
-}
