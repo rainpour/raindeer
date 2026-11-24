@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Events and Routes pages show each event and observer by its name as code like `RequestEvent` with its namespace in a tooltip
 - The Requests page says how many requests it keeps from the event pool's size
 - The Events page counts the route event's routes with a link to the Routes page instead of listing every node that observes one
+- Needs LowEvent 0.8.9
 
 ### Added
 
@@ -20,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - The Requests page leaves out the request being answered now. Without the rule keeping the system pages apart it rendered its own tree as it added to it forever
-- Needs LowEvent 0.8.9
 
 ## 1.0.39
 
