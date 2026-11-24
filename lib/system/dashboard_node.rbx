@@ -19,7 +19,7 @@ module System
       <{ LayoutNode: }>
         <div class="stats">
           <{ for: stat in: @stats }>
-            <{ StatFormatter title=stat.title stat=stat.value key=stat.key }>
+            <{ StatFormatter title=stat.title stat=stat.value key=stat.key href=stat.href }>
           <{ :for }>
         </div>
 

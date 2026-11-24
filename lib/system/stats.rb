@@ -5,7 +5,12 @@ module System
   # answers, its memory, then the framework itself. The dashboard shows them and /system/stats sends them as JSON so
   # the dashboard can refresh them each second.
   class Stats
-    Stat = Data.define(:key, :title, :value)
+    # A stat with an href links its title to where it came from.
+    Stat = Data.define(:key, :title, :value, :href) do
+      def initialize(key:, title:, value:, href: '')
+        super
+      end
+    end
 
     attr_reader :all
 
@@ -31,7 +36,8 @@ module System
 
     def speed_row(log)
       [Stat.new(key: 'typical', title: 'Typical response', value: milliseconds(log.typical_milliseconds)),
-       Stat.new(key: 'slowest', title: 'Slowest response', value: milliseconds(log.slowest_milliseconds)),
+       Stat.new(key: 'slowest', title: 'Slowest response', value: milliseconds(log.slowest_milliseconds),
+                href: '/system/requests/slowest'),
        Stat.new(key: 'connections', title: 'Open connections', value: Low::ConnectionManager.open_count),
        Stat.new(key: 'threads', title: 'Threads', value: Thread.list.size)]
     end

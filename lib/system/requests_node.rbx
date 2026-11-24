@@ -31,7 +31,7 @@ module System
         <{ :if }>
 
         <{ for: entry in: @entries }>
-          <details class="request">
+          <details class="request" id="{entry.anchor}">
             <summary>
               <code>{entry.verb}</code>{" "}<strong>{entry.path}</strong>
               <small>{" "}{entry.status}{" · "}{entry.milliseconds}{" ms · "}{entry.events}{" events · "}{entry.seconds_ago}{" s ago"}</small>

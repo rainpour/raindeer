@@ -63,6 +63,10 @@ RSpec.describe System::RequestLog do
     expect([log.typical_milliseconds, log.slowest_milliseconds]).to eq([30, 80])
   end
 
+  it 'gives the slowest request with its place on the requests page' do
+    expect([log.slowest.path, log.slowest.anchor]).to eq(['/newer', "request-#{trees[:c].root_event.object_id}"])
+  end
+
   it "links a GET to visit again but not a form's POST" do
     trees = { a: tree('/shop', at: 199_000, took: 1), b: tree('/invite', at: 199_500, took: 1, verb: 'POST') }
     expect(described_class.new(event_trees: trees, answering_now: nil, now:).entries.map(&:visit_path)).to eq([nil, '/shop'])

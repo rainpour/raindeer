@@ -15,6 +15,11 @@ module System
       def missing?
         status == 404
       end
+
+      # Its place on the requests page, which stays the same while the pool holds it.
+      def anchor
+        "request-#{root.object_id}"
+      end
     end
 
     # The request being answered now is left out as a page listing it would render the tree it's adding to forever.
@@ -32,8 +37,12 @@ module System
       times[times.size / 2]
     end
 
+    def slowest
+      @entries.max_by(&:milliseconds)
+    end
+
     def slowest_milliseconds
-      @entries.map(&:milliseconds).max
+      slowest&.milliseconds
     end
 
     private

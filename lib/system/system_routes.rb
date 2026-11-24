@@ -5,7 +5,9 @@ if Raindeer.config&.system_mode
   Raindeer.router do
     get '/system' do
       get '/events'
-      get '/requests'
+      get '/requests' do
+        get '/slowest'
+      end
       get '/routes'
       get '/stats'
     end
