@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module System
-  # Where an average request spends its time by kind of event in the order they happen. Events wait for the events they
-  # cause so each one's own time leaves out its children's.
+  # Where a request spends its time by kind of event in the order they happen. Events wait for the events they cause so
+  # each one's own time leaves out its children's. A request still being answered has no segments yet.
   class Lifecycle
-    # A kind of event and its own time in an average request.
+    # A kind of event and its own time in the request.
     Segment = Data.define(:name, :milliseconds) do
       def label
         "#{name} #{duration}"
@@ -20,11 +20,10 @@ module System
 
     attr_reader :segments
 
-    def initialize(entries: RequestLog.new.entries)
-      roots = entries.map(&:root).select(&:milliseconds)
+    def initialize(root)
       totals = Hash.new(0.0)
-      roots.each { |root| add_own_times(root, totals) }
-      @segments = totals.map { |name, total| Segment.new(name:, milliseconds: total / roots.size) }
+      add_own_times(root, totals) if root.milliseconds
+      @segments = totals.map { |name, total| Segment.new(name:, milliseconds: total) }
     end
 
     private

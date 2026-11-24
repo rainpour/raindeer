@@ -31,7 +31,7 @@ module System
           <header class="system-header">
             <div class="container">
               <a class="brand" href="/">
-                <img src="/system/logo.png?v={@version}" alt="Raindeer" width="74" height="96">
+                <img src="/system/logo.png?v={@version}" alt="Raindeer" width="49" height="64">
               </a>
               <nav>
                 <ul>

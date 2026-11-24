@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module System
-  # The last requests the event pool holds, newest first. Open one to see every event it caused, in the order they
-  # branched from the request.
+  # The last requests the event pool holds, newest first. Open one to see where its time went as a bar and every event
+  # it caused in the order they branched from the request.
   class RequestsNode < LowNode
     observe '/system/requests'
 
@@ -28,6 +28,7 @@ module System
                 <a class="visit" href="{entry.visit_path}" role="button">{"Visit"}</a>
               <{ :if }>
             </summary>
+            <{ LifecycleFormatter root=entry.root }>
             <ul class="tree">
               <{ BranchFormatter branch=entry.root }>
             </ul>

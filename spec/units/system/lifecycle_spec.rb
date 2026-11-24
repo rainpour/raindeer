@@ -2,34 +2,29 @@
 
 require 'dirload'
 
-%w[request_log lifecycle].each { |name| dirload(File.join(Dir.pwd, "/lib/system/#{name}.rb")) }
+dirload(File.join(Dir.pwd, '/lib/system/lifecycle.rb'))
 
 RSpec.describe System::Lifecycle do
   # Stand-ins for events with how long each took and the events it caused.
   let(:event) { Struct.new(:milliseconds, :children) }
-  let(:entry) { Struct.new(:root) }
 
   before do
     stub_const('RequestEvent', Class.new(event))
     stub_const('RouteEvent', Class.new(event))
-    stub_const('RenderEvent', Class.new(event))
+    stub_const('NodeEvent', Class.new(event))
+    stub_const('DataEvent', Class.new(event))
   end
 
-  def request(milliseconds, route:, render:)
-    entry.new(RequestEvent.new(milliseconds, [RouteEvent.new(route, [RenderEvent.new(render, [])])]))
+  it "gives each kind of event its own time without its children's in the order they happen" do
+    nodes = [NodeEvent.new(3, [DataEvent.new(2, [])]), NodeEvent.new(1, [])]
+    request = RequestEvent.new(10, [RouteEvent.new(8, nodes)])
+
+    expect(described_class.new(request).segments.map { |segment| [segment.name, segment.milliseconds] })
+      .to eq([['Request', 2.0], ['Route', 4.0], ['Node', 2.0], ['Data', 2.0]])
   end
 
-  it "gives each kind of event its own time without its children's averaged across requests in the order they happen" do
-    lifecycle = described_class.new(entries: [request(10, route: 8, render: 5), request(20, route: 12, render: 3)])
-
-    expect(lifecycle.segments.map { |segment| [segment.name, segment.milliseconds] })
-      .to eq([['Request', 5.0], ['Route', 6.0], ['Render', 4.0]])
-  end
-
-  it "leaves out a request that's still being answered" do
-    still_answering = entry.new(RequestEvent.new(nil, []))
-
-    expect(described_class.new(entries: [still_answering]).segments).to eq([])
+  it "has no segments for a request that's still being answered" do
+    expect(described_class.new(RequestEvent.new(nil, [])).segments).to eq([])
   end
 
   it 'labels a segment with its time with a decimal under 10 ms' do

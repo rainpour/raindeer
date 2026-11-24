@@ -8,6 +8,17 @@
   --system-border: 1px solid var(--pico-muted-border-color);
   --system-radius: 0.75rem;
   --system-shadow: 0 1px 2px rgb(0 0 0 / 12%), 0 4px 16px rgb(0 0 0 / 6%);
+  --system-logo-invert: 0.1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --system-logo-invert: 1;
+  }
+}
+
+[data-theme="dark"] {
+  --system-logo-invert: 1;
 }
 
 /* The header, content and footer keep to a readable width on wide screens, and off the edges on narrow ones. */
@@ -37,8 +48,13 @@ main.container {
     padding-block: 0.6rem;
   }
 
+  /* The deer as a silhouette in white on dark and in near black on light where white wouldn't show. */
   .brand {
     display: flex;
+
+    img {
+      filter: brightness(0) invert(var(--system-logo-invert));
+    }
   }
 
   nav ul {
@@ -144,22 +160,17 @@ h2 {
 
 /***** LIFECYCLE *****/
 
-/* An average request's events side by side each as wide as its own time and each its own colour. It opens the requests. */
+/* A request's events side by side each as wide as its own time and each its own colour. */
 .lifecycle {
   display: flex;
-  height: 2.75rem;
-  margin-bottom: 1.5rem;
+  height: 2.25rem;
+  margin-bottom: 0.75rem;
   overflow: hidden;
   border-radius: var(--system-radius);
   box-shadow: var(--system-shadow);
   color: #fff;
   font-size: 0.75rem;
   font-weight: 600;
-  text-decoration: none;
-
-  &:hover {
-    filter: brightness(1.1);
-  }
 
   > span {
     display: grid;
