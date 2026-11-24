@@ -57,6 +57,11 @@ main.container {
       margin-block: -0.4rem;
       filter: brightness(0) invert(var(--system-logo-invert));
     }
+
+    /* A phone has room for the pages but not the deer as well. */
+    @media (max-width: 576px) {
+      display: none;
+    }
   }
 
   nav ul {
