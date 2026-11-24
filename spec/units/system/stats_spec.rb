@@ -18,7 +18,7 @@ RSpec.describe System::Stats do
 
   it 'has 16 stats, four to a row, each with its own key' do
     expect([stats.all.size, stats.all.map(&:key).uniq.size, stats.all.first(4).map(&:title)])
-      .to eq([16, 16, ['Uptime', 'Visitors (5 min)', 'Requests per second', 'Answering now']])
+      .to eq([16, 16, ['Uptime', 'Visitors (5 min)', 'Requests per second', 'Actions per second']])
   end
 
   it 'gives each value as text by its key, for the dashboard to refresh' do

@@ -26,11 +26,6 @@ module System
 
     attr_reader :entries
 
-    # Requests still being answered, which haven't made their response yet.
-    def answering
-      @entries.count { |entry| entry.status.nil? }
-    end
-
     # The middle request's time, so a few slow ones don't skew it.
     def typical_milliseconds
       times = @entries.map(&:milliseconds).sort

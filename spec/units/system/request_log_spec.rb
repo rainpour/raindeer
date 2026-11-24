@@ -63,11 +63,6 @@ RSpec.describe System::RequestLog do
     expect([log.typical_milliseconds, log.slowest_milliseconds]).to eq([30, 80])
   end
 
-  it 'counts the requests still being answered' do
-    trees = { a: tree('/a', at: 199_000, took: 1), b: tree('/b', at: 199_500, took: 1, answered: false) }
-    expect(described_class.new(event_trees: trees, answering_now: nil, now:).answering).to eq(1)
-  end
-
   it "links a GET to visit again but not a form's POST" do
     trees = { a: tree('/shop', at: 199_000, took: 1), b: tree('/invite', at: 199_500, took: 1, verb: 'POST') }
     expect(described_class.new(event_trees: trees, answering_now: nil, now:).entries.map(&:visit_path)).to eq([nil, '/shop'])

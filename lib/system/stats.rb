@@ -12,7 +12,7 @@ module System
     def initialize
       memory = MemoryNode.current
       log = RequestLog.new
-      @all = busy_row(log, memory) + speed_row(log) + memory_row(memory) + framework_row(memory)
+      @all = busy_row(memory) + speed_row(log) + memory_row(memory) + framework_row(memory)
     end
 
     # Each stat's value by its key, as text the way the dashboard shows it.
@@ -22,11 +22,11 @@ module System
 
     private
 
-    def busy_row(log, memory)
+    def busy_row(memory)
       [Stat.new(key: 'uptime', title: 'Uptime', value: uptime(memory.at - MemoryNode::BOOTED_AT)),
        Stat.new(key: 'visitors', title: 'Visitors (5 min)', value: Traffic.visitors),
        Stat.new(key: 'per_second', title: 'Requests per second', value: Traffic.per_second),
-       Stat.new(key: 'answering', title: 'Answering now', value: log.answering)]
+       Stat.new(key: 'actions', title: 'Actions per second', value: Providers['low.event.pool'].action_rate.per_second)]
     end
 
     def speed_row(log)
