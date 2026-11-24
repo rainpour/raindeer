@@ -149,6 +149,45 @@ module Rain
           end
         end
       end
+
+      context 'with a static segment next to a :param' do
+        before do
+          trie.merge(route: Route.new(path: '/dispatches/:id'))
+          trie.merge(route: Route.new(path: '/dispatches/by_involved_entity/:id'))
+        end
+
+        def matched(path)
+          request = Low::Support::RequestFactory.request(path:, verb: 'GET')
+          trie.match(request:).map { |event| [event.route.path, event.params, event.actions.first] }
+        end
+
+        it 'matches the static segment rather than the :param' do
+          expect(matched('/dispatches/by_involved_entity/R-1')).to eq([['/dispatches/by_involved_entity/:id', { id: 'R-1' }, :render]])
+        end
+
+        it 'matches the :param when the static segment differs' do
+          expect(matched('/dispatches/D-1')).to eq([['/dispatches/:id', { id: 'D-1' }, :render]])
+        end
+
+        it 'matches the :param when the static segment only starts the same' do
+          expect(matched('/dispatches/by_id')).to eq([['/dispatches/:id', { id: 'by_id' }, :render]])
+        end
+
+        it 'matches the :param when the static segment is the whole value' do
+          expect(matched('/dispatches/by_involved_entity')).to eq([['/dispatches/:id', { id: 'by_involved_entity' }, :render]])
+        end
+      end
+
+      context 'with routes that capture more params further along' do
+        let(:request) { Low::Support::RequestFactory.request(path: '/mark/42', verb: 'GET') }
+
+        it 'gives each route event only the params of its own route' do
+          trie.merge(route: Route.new(path: '/:user_id'))
+          trie.merge(route: Route.new(path: '/:user_id/:post_id'))
+
+          expect(trie.match(request:).map(&:params)).to eq([{ user_id: 'mark' }, { user_id: 'mark', post_id: '42' }])
+        end
+      end
     end
   end
 end

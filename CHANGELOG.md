@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.41
+
+### Fixed
+
+- A route with a static segment beside a `:param` route, like `/posts/drafts/:id` beside `/posts/:id`, renders rather than responding 404. A static segment that matches a route to the end of the path wins over the `:param`, and the `:param` route's side effects don't run
+- Each route event has only the params of its own route. They shared one hash, so `/posts/drafts/7` gave `/posts/drafts/:id` the `id` `drafts`
+
 ## 1.0.40
 
 ### Changed

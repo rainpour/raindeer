@@ -190,5 +190,38 @@ RSpec.describe Rain::Router do
         end
       end
     end
+
+    context 'with a static route next to a :param route' do
+      let(:request) { Low::Support::RequestFactory.request(path: '/posts/drafts/7') }
+
+      before do
+        class PostObserver
+          include Observers
+          observe '/posts/:id'
+        end
+
+        class DraftObserver
+          include Observers
+          observe '/posts/drafts/:id'
+        end
+
+        allow(PostObserver).to receive_messages(render: 'post', side_effect: nil)
+        allow(DraftObserver).to receive(:render).and_return('draft')
+
+        router.route '/posts/:id'
+        router.route '/posts/drafts/:id'
+      end
+
+      it 'responds with the static route, with its own params' do
+        expect(router.request(event: request_event)).to eq('draft')
+        expect(DraftObserver).to have_received(:render).with({ event: having_attributes(params: { id: '7' }) })
+      end
+
+      it "doesn't trigger the :param route" do
+        router.request(event: request_event)
+        expect(PostObserver).not_to have_received(:render)
+        expect(PostObserver).not_to have_received(:side_effect)
+      end
+    end
   end
 end

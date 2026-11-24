@@ -45,29 +45,38 @@ module Rain
 
       return [] if (key = path[current_index]).nil?
 
-      route_events = []
+      # Static request path segment, which wins over a :param when it matches a route to the end of the path,
+      # like "/posts/drafts/7" for "/posts/drafts/:id" rather than "/posts/:id".
+      static_node = current_node.child(key:)
+      static_events = static_node ? events_from(node: static_node, next_index: current_index + 1, params:, request:) : []
+      return static_events if ends?(static_events)
 
-      # Static request path segment.
-      if (child_node = current_node.child(key:))
-        route_events << route_event(next_index: current_index + 1, params:, request:, route: child_node.route) if child_node.route
-        route_events = [*route_events, *match(request:, current_node: child_node, current_index: current_index + 1, params:)]
-      end
-
-      # Dynamic request path segment.
-      current_node.params.each do |param|
-        child_node = current_node.child(key: param)
-
+      # Dynamic request path segment, each with its own params, so one route's arg isn't another's.
+      dynamic_events = current_node.params.flat_map do |param|
         arg, next_index = capture_arg(arg_start_index: current_index, path:)
-        params[param.delete_prefix(':').to_sym] = arg
+        param_params = params.merge(param.delete_prefix(':').to_sym => arg)
 
-        route_events << route_event(next_index:, params:, request:, route: child_node.route) if child_node.route
-        route_events = [*route_events, *match(request:, current_node: child_node, current_index: next_index, params:)]
+        events_from(node: current_node.child(key: param), next_index:, params: param_params, request:)
       end
+      # The static events were a different path from here, so when a :param matches to the end only its events count.
+      return dynamic_events if ends?(dynamic_events)
 
-      route_events
+      [*static_events, *dynamic_events]
     end
 
     private
+
+    # The node's own route event, if it has a route, then those of the routes below it.
+    def events_from(node:, next_index:, params:, request:)
+      route_events = []
+      route_events << route_event(next_index:, params:, request:, route: node.route) if node.route
+      route_events.concat(match(request:, current_node: node, current_index: next_index, params:))
+    end
+
+    # Whether a route was matched to the end of the path, to render or receive rather than only for its side effects.
+    def ends?(route_events)
+      route_events.any? { |route_event| route_event.actions.first != :side_effect }
+    end
 
     # Mid nodes side_effect, end nodes render.
     def route_event(next_index:, params:, request:, route:)
