@@ -15,10 +15,12 @@ dirload(File.join(Dir.pwd, '/lib/system/formatters/intervals_formatter.rbx'))
 
 RSpec.describe System::RequestLog do
   # A request's tree of a request event and its response, made at a time in milliseconds and taking how long it took.
-  # Optionally the status it answered, the address it came from, its verb and whether it's still being answered.
+  # Optionally the status it answered, the address it came from, the page that linked to it, its verb and whether it's
+  # still being answered.
   def tree(path, at:, took:, **options)
     http = Low::Support::RequestFactory.request(path:, verb: options.fetch(:verb, 'GET'))
     http.headers.add('cf-connecting-ip', options[:from]) if options[:from]
+    http.headers.add('referer', options[:referrer]) if options[:referrer]
     request = Low::Events::RequestEvent.new(request: http)
     response = Low::Events::ResponseEvent.new(response: Protocol::HTTP::Response[options.fetch(:status, 200)])
     request.instance_variable_set(:@created_at, at)
@@ -33,12 +35,28 @@ RSpec.describe System::RequestLog do
     { a: tree('/old', at: 100_000, took: 30), b: tree('/new', at: 190_000, took: 10, status: 404),
       c: tree('/newer', at: 199_000, took: 80) }
   end
-  let(:log) { described_class.new(event_trees: trees, now:) }
+  let(:log) { described_class.new(event_trees: trees, answering_now: nil, now:) }
 
   it 'lists each request newest first with what it answered and how long it took' do
     entry = log.entries.first
     expect([log.entries.map(&:path), entry.verb, entry.status, entry.events, entry.milliseconds, entry.seconds_ago])
       .to eq([%w[/newer /new /old], 'GET', 200, 2, 80, 1])
+  end
+
+  it 'has the page that linked to a request when the browser said' do
+    trees = { a: tree('/old-page', at: 199_000, took: 1, referrer: 'https://sourdough.com/recipes'), b: tree('/shop', at: 199_500, took: 1) }
+
+    expect(described_class.new(event_trees: trees, answering_now: nil, now:).entries.map(&:referrer)).to eq([nil, 'https://sourdough.com/recipes'])
+  end
+
+  it 'leaves out the request being answered now' do
+    trees = { a: tree('/system/requests', at: 199_000, took: 1, answered: false), b: tree('/shop', at: 199_500, took: 1) }
+
+    expect(described_class.new(event_trees: trees, answering_now: trees[:a], now:).entries.map(&:path)).to eq(['/shop'])
+  end
+
+  it 'knows a request that was missing' do
+    expect(log.entries.map(&:missing?)).to eq([false, true, false])
   end
 
   it 'gives the middle and the slowest response time' do
@@ -47,12 +65,12 @@ RSpec.describe System::RequestLog do
 
   it 'counts the requests still being answered' do
     trees = { a: tree('/a', at: 199_000, took: 1), b: tree('/b', at: 199_500, took: 1, answered: false) }
-    expect(described_class.new(event_trees: trees, now:).answering).to eq(1)
+    expect(described_class.new(event_trees: trees, answering_now: nil, now:).answering).to eq(1)
   end
 
   it "links a GET to visit again but not a form's POST" do
     trees = { a: tree('/shop', at: 199_000, took: 1), b: tree('/invite', at: 199_500, took: 1, verb: 'POST') }
-    expect(described_class.new(event_trees: trees, now:).entries.map(&:visit_path)).to eq([nil, '/shop'])
+    expect(described_class.new(event_trees: trees, answering_now: nil, now:).entries.map(&:visit_path)).to eq([nil, '/shop'])
   end
 
   it 'leaves out trees an interval started' do

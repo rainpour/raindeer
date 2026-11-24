@@ -6,8 +6,12 @@ module System
   class RequestsNode < LowNode
     observe '/system/requests'
 
+    # Found requests show by default and ?show=missing shows the 404s.
     def initialize(event:)
-      @entries = RequestLog.new.entries
+      missing = event.query[:show] == 'missing'
+      @entries = RequestLog.new.entries.select { |entry| entry.missing? == missing }
+      @found = (!missing).to_s
+      @missing = missing.to_s
       @kept = Low::Events::EventPool::BUFFER_SIZE
       @empty = @entries.empty?
     end
@@ -16,8 +20,13 @@ module System
       <{ LayoutNode: }>
         <p class="lede">{"The last "}{@kept}{" requests"}</p>
 
+        <div class="pills">
+          <a href="/system/requests" aria-current="{@found}">{"Found"}</a>
+          <a href="/system/requests?show=missing" aria-current="{@missing}">{"Missing"}</a>
+        </div>
+
         <{ if: @empty }>
-          <p>{"No requests yet."}</p>
+          <p>{"None yet."}</p>
         <{ :if }>
 
         <{ for: entry in: @entries }>
@@ -25,6 +34,9 @@ module System
             <summary>
               <code>{entry.verb}</code>{" "}<strong>{entry.path}</strong>
               <small>{" "}{entry.status}{" · "}{entry.milliseconds}{" ms · "}{entry.events}{" events · "}{entry.seconds_ago}{" s ago"}</small>
+              <{ if: entry.referrer }>
+                <small class="referrer">{"from "}{entry.referrer}</small>
+              <{ :if }>
               <{ if: entry.visit_path }>
                 <a class="visit" href="{entry.visit_path}" role="button">{"Visit"}</a>
               <{ :if }>

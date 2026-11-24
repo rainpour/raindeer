@@ -5,15 +5,23 @@ module System
   # nothing extra is kept to show them. The pool keeps the system pages' own requests and interval ticks apart.
   class RequestLog
     # A request with what it answered and how long it took. Its tree is every event it caused, from the request down.
-    Entry = Data.define(:verb, :path, :status, :events, :milliseconds, :seconds_ago, :root) do
+    # Its referrer is the page that linked to it when the browser said.
+    Entry = Data.define(:verb, :path, :status, :referrer, :events, :milliseconds, :seconds_ago, :root) do
       # Where to visit the page again, for a GET. A form's POST can't be visited again by following a link.
       def visit_path
         path if verb == 'GET'
       end
+
+      def missing?
+        status == 404
+      end
     end
 
-    def initialize(event_trees: Providers['low.event.pool'].event_trees, now: clock)
-      @entries = event_trees.values.filter_map { |tree| entry(tree, now) }.sort_by(&:seconds_ago)
+    # The request being answered now is left out as a page listing it would render the tree it's adding to forever.
+    def initialize(event_trees: Providers['low.event.pool'].event_trees, answering_now: Providers['low.event.pool'].event_tree_now,
+                   now: clock)
+      trees = event_trees.values.reject { |tree| tree.equal?(answering_now) }
+      @entries = trees.filter_map { |tree| entry(tree, now) }.sort_by(&:seconds_ago)
     end
 
     attr_reader :entries
@@ -40,7 +48,8 @@ module System
       return unless root.is_a?(Low::Events::RequestEvent)
 
       events = tree.sequence.dup
-      Entry.new(verb: root.request.method, path: root.request.path, status: status(events), events: events.size,
+      Entry.new(verb: root.request.method, path: root.request.path, status: status(events),
+                referrer: root.request.headers['referer'], events: events.size,
                 milliseconds: (events.last.created_at - root.created_at).round,
                 seconds_ago: ((now - root.created_at) / 1000).floor,
                 root:)

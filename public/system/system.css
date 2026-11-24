@@ -72,24 +72,35 @@ main.container {
   nav li {
     padding: 0;
   }
+}
 
-  nav a {
-    margin: 0;
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    color: var(--pico-muted-color);
-    text-decoration: none;
+/* The menu's pages and a page's own switches like found and missing requests as pills with the open one highlighted. */
+.system-header nav a,
+.pills a {
+  margin: 0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  color: var(--pico-muted-color);
+  text-decoration: none;
 
-    &:hover {
-      color: var(--pico-contrast);
-      background-color: var(--pico-secondary-focus);
-    }
-
-    &[aria-current="true"] {
-      color: var(--pico-primary-inverse);
-      background-color: var(--pico-primary-background);
-    }
+  &:hover {
+    color: var(--pico-contrast);
+    background-color: var(--pico-secondary-focus);
   }
+
+  &[aria-current="true"] {
+    color: var(--pico-primary-inverse);
+    background-color: var(--pico-primary-background);
+  }
+}
+
+.pills {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  border: var(--system-border);
+  border-radius: 999px;
 }
 
 /* The version on the left and Raindeer's links on the right. */
@@ -384,6 +395,14 @@ h2 {
 
     small {
       color: var(--pico-muted-color);
+    }
+
+    /* The page that linked to the request which can be a long address. */
+    .referrer {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     /* At the end of the heading, before the arrow that opens it. */

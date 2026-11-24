@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Requests page says how many requests it keeps from the event pool's size
 - The Events page counts the route event's routes with a link to the Routes page instead of listing every node that observes one
 
+### Added
+
+- The Requests page switches between Found and Missing requests and shows the page that linked to each one when the browser said
+
+### Fixed
+
+- The Requests page leaves out the request being answered now. Without the rule keeping the system pages apart it rendered its own tree as it added to it forever
+- Needs LowEvent 0.8.9
+
 ## 1.0.39
 
 ### Fixed
