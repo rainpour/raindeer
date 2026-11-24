@@ -48,7 +48,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lownode', '~> 0.5', '>= 0.5.14'
   spec.add_dependency 'lowtype', '>= 1.6.2'
 
-  spec.add_dependency 'antlers', '~> 1.5', '>= 1.5.8'
+  spec.add_dependency 'antlers', '~> 1.5', '>= 1.5.9'
   spec.add_dependency 'expressions', '~> 0.4'
   spec.add_dependency 'observers', '~> 1.1', '>= 1.1.3'
   spec.add_dependency 'plugs', '~> 0.4'

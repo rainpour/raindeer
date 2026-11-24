@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - A route with a static segment beside a `:param` route, like `/posts/drafts/:id` beside `/posts/:id`, renders rather than responding 404. A static segment that matches a route to the end of the path wins over the `:param`, and the `:param` route's side effects don't run
 - Each route event has only the params of its own route. They shared one hash, so `/posts/drafts/7` gave `/posts/drafts/:id` the `id` `drafts`
+- Needs Antlers 1.5.9, for its fix to a slot inside another component's slot
 
 ## 1.0.40
 
