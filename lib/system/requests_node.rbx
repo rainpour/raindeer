@@ -8,12 +8,13 @@ module System
 
     def initialize(event:)
       @entries = RequestLog.new.entries
+      @kept = Low::Events::EventPool::BUFFER_SIZE
       @empty = @entries.empty?
     end
 
     def render(event:) # rubocop:disable Lint/UnusedMethodArgument
       <{ LayoutNode: }>
-        <p class="lede">{"The last 100 requests, newest first. Open one to see every event it caused."}</p>
+        <p class="lede">{"The last "}{@kept}{" requests"}</p>
 
         <{ if: @empty }>
           <p>{"No requests yet."}</p>

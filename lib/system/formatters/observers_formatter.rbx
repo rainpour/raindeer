@@ -9,7 +9,7 @@ class ObserversFormatter < LowNode
   def render(event:, observer_key:)
     <ul>
       <{ for: observer in: @observers }>
-        <li>{ observer }</li>
+        <li><{ ClassNameFormatter full_name=observer }></li>
       <{ :for }>
     </ul>
   end
