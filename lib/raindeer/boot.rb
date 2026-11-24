@@ -64,11 +64,12 @@ module Rain
     raindeer_files = Low::FileServer.new(web_root: File.expand_path('../../public', __dir__), content_types: config.content_types,
                                          cache_control: config.cache_control)
 
-    # A request from another site's page is turned away before anything else answers it.
+    # A request from another site's page is turned away before anything else answers it, then one over its rate limit.
     require_relative '../security/cross_origin_protection'
+    require_relative '../security/rate_limit'
     # With the system pages on, each request is counted for the dashboard first, before anything can answer it.
     traffic = System::Traffic if config.system_mode
-    Low::Events::RequestEvent.define { |observers| [*traffic, Rain::CrossOriginProtection, raindeer_files, *observers] }
+    Low::Events::RequestEvent.define { |observers| [*traffic, Rain::CrossOriginProtection, Rain::RateLimit, raindeer_files, *observers] }
     low_loop
   end
 end

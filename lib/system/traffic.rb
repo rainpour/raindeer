@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'openssl'
+require_relative '../security/visitor_address'
 
 module System
   # Who's visiting and how busy the app is, counted as each request comes in, so it isn't limited to the event pool's
@@ -20,7 +21,7 @@ module System
       # The system pages aren't counted, so the dashboard refreshing itself each second doesn't count as traffic.
       def request(event:)
         request = event.request
-        record(VisitorAddress.from(request&.headers)) unless request&.path.to_s.start_with?('/system')
+        record(Rain::VisitorAddress.from(request&.headers)) unless request&.path.to_s.start_with?('/system')
         nil
       end
 

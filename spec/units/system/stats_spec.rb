@@ -7,7 +7,7 @@ require 'antlers'
 require_relative '../../../lib/raindeer/integrations'
 require_relative '../../factories/request_factory'
 
-%w[numbers visitor_address traffic request_log memory_node stats].each do |name|
+%w[numbers traffic request_log memory_node stats].each do |name|
   dirload(File.join(Dir.pwd, "/lib/system/#{name}.rb"))
 end
 

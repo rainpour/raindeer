@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module System
+module Rain
   # Where a request came from, as a proxy like Cloudflare or Caddy says in a header. The first header found wins, and
   # x-forwarded-for lists each proxy after the visitor, so the first address in it is theirs.
   module VisitorAddress

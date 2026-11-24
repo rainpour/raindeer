@@ -8,7 +8,7 @@ require_relative '../../../lib/raindeer/integrations'
 require_relative '../../factories/request_factory'
 
 dirload(File.join(Dir.pwd, '/lib/system/request_log.rb'))
-dirload(File.join(Dir.pwd, '/lib/system/visitor_address.rb'))
+require_relative '../../../lib/security/visitor_address'
 dirload(File.join(Dir.pwd, '/lib/system/traffic.rb'))
 dirload(File.join(Dir.pwd, '/lib/system/numbers.rb'))
 dirload(File.join(Dir.pwd, '/lib/system/formatters/intervals_formatter.rbx'))
@@ -138,7 +138,7 @@ RSpec.describe System::Traffic do
   end
 end
 
-RSpec.describe System::VisitorAddress do
+RSpec.describe Rain::VisitorAddress do
   def headers(pairs)
     Protocol::HTTP::Headers.new.tap { |list| pairs.each { |name, value| list.add(name, value) } }
   end
