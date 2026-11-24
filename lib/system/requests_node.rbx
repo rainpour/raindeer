@@ -18,11 +18,12 @@ module System
 
     def render(event:) # rubocop:disable Lint/UnusedMethodArgument
       <{ LayoutNode: }>
-        <p class="lede">{"The last "}{@kept}{" requests"}</p>
-
-        <div class="pills">
-          <a href="/system/requests" aria-current="{@found}">{"Found"}</a>
-          <a href="/system/requests?show=missing" aria-current="{@missing}">{"Missing"}</a>
+        <div class="intro">
+          <p class="lede">{"The last "}{@kept}{" requests"}</p>
+          <div class="pills">
+            <a href="/system/requests" aria-current="{@found}">{"Found"}</a>
+            <a href="/system/requests?show=missing" aria-current="{@missing}">{"Missing"}</a>
+          </div>
         </div>
 
         <{ if: @empty }>
