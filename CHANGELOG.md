@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 1.0.33
 
+### Added
+
+- A bar at the top of the dashboard shows where an average request spends its time. Each kind of event is a segment as wide as its own time without the events it caused. Clicking it opens the requests
+
 ### Changed
 
 - The system header shows a bigger deer without the words Raindeer System

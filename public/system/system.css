@@ -142,6 +142,67 @@ h2 {
   text-transform: uppercase;
 }
 
+/***** LIFECYCLE *****/
+
+/* An average request's events side by side each as wide as its own time and each its own colour. It opens the requests. */
+.lifecycle {
+  display: flex;
+  height: 2.75rem;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  border-radius: var(--system-radius);
+  box-shadow: var(--system-shadow);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+
+  > span {
+    display: grid;
+    flex-basis: 0;
+    place-items: center;
+    min-width: 3px;
+    overflow: hidden;
+    container-type: inline-size;
+    white-space: nowrap;
+  }
+
+  > span:nth-child(8n + 1) { background-color: #2563eb; }
+  > span:nth-child(8n + 2) { background-color: #7c3aed; }
+  > span:nth-child(8n + 3) { background-color: #db2777; }
+  > span:nth-child(8n + 4) { background-color: #c2410c; }
+  > span:nth-child(8n + 5) { background-color: #15803d; }
+  > span:nth-child(8n + 6) { background-color: #0e7490; }
+  > span:nth-child(8n + 7) { background-color: #a16207; }
+  > span:nth-child(8n + 8) { background-color: #4338ca; }
+}
+
+/* A label drops its time and then its name as its segment gets too narrow for them. */
+.lifecycle span span {
+  padding-inline: 0.3rem;
+}
+
+.lifecycle small {
+  font-size: inherit;
+  font-weight: 400;
+}
+
+@container (max-width: 6.5rem) {
+  .lifecycle small {
+    display: none;
+  }
+}
+
+@container (max-width: 3rem) {
+  .lifecycle span span {
+    display: none;
+  }
+}
+
 /***** DASHBOARD *****/
 
 /* The stats four across, two across on a phone. */

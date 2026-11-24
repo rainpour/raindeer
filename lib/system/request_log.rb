@@ -43,7 +43,8 @@ module System
 
       events = tree.sequence.dup
       Entry.new(verb: root.request.method, path: root.request.path, status: status(events), events: events.size,
-                milliseconds: events.last.created_at - root.created_at, seconds_ago: (now - root.created_at) / 1000,
+                milliseconds: (events.last.created_at - root.created_at).round,
+                seconds_ago: ((now - root.created_at) / 1000).floor,
                 root:)
     end
 

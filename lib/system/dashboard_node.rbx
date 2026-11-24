@@ -6,6 +6,8 @@ module System
 
     def initialize(event:)
       @stats = Stats.new.all
+      @segments = Lifecycle.new.segments
+      @lifecycle = @segments.any?
       samples = MemoryNode.samples
       @trend = samples.size > 1
       @megabytes = samples.map(&:megabytes)
@@ -14,9 +16,18 @@ module System
       @retained_counts = samples.map(&:retained)
     end
 
-    # The stats four across, in Stats' order, which refresh each second, then the trends and intervals.
+    # An average request's events as a bar then the stats four across in Stats' order which refresh each second. Then the
+    # trends and intervals.
     def render(event:) # rubocop:disable Lint/UnusedMethodArgument
       <{ LayoutNode: }>
+        <{ if: @lifecycle }>
+          <a class="lifecycle" href="/system/requests" title="Where an average request spends its time">
+            <{ for: segment in: @segments }>
+              <span style="flex-grow: {segment.milliseconds}" title="{segment.label}"><span>{segment.name}{" "}<small>{segment.duration}</small></span></span>
+            <{ :for }>
+          </a>
+        <{ :if }>
+
         <div class="stats">
           <{ for: stat in: @stats }>
             <{ StatFormatter title=stat.title stat=stat.value key=stat.key }>
