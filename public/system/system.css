@@ -45,14 +45,16 @@ main.container {
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem 1rem;
-    padding-block: 0.6rem;
+    padding-block: 0.4rem;
   }
 
-  /* The deer as a silhouette in white on dark and in near black on light where white wouldn't show. */
+  /* The deer as a silhouette in white on dark and in near black on light where white wouldn't show. It reaches into the
+     header's padding so the header is only as tall as the deer. */
   .brand {
     display: flex;
 
     img {
+      margin-block: -0.4rem;
       filter: brightness(0) invert(var(--system-logo-invert));
     }
   }
@@ -160,12 +162,12 @@ h2 {
 
 /***** LIFECYCLE *****/
 
-/* A request's events side by side each as wide as its own time and each its own colour. */
+/* A request's events side by side each as wide as its own time and each its own colour. The first and last segments
+   round the bar's corners so nothing clips the tooltips. */
 .lifecycle {
   display: flex;
   height: 2.25rem;
   margin-bottom: 0.75rem;
-  overflow: hidden;
   border-radius: var(--system-radius);
   box-shadow: var(--system-shadow);
   color: #fff;
@@ -173,13 +175,18 @@ h2 {
   font-weight: 600;
 
   > span {
-    display: grid;
     flex-basis: 0;
-    place-items: center;
     min-width: 3px;
-    overflow: hidden;
     container-type: inline-size;
     white-space: nowrap;
+
+    &:first-child {
+      border-radius: var(--system-radius) 0 0 var(--system-radius);
+    }
+
+    &:last-child {
+      border-radius: 0 var(--system-radius) var(--system-radius) 0;
+    }
   }
 
   > span:nth-child(8n + 1) { background-color: #2563eb; }
@@ -190,18 +197,28 @@ h2 {
   > span:nth-child(8n + 6) { background-color: #0e7490; }
   > span:nth-child(8n + 7) { background-color: #a16207; }
   > span:nth-child(8n + 8) { background-color: #4338ca; }
+
+  .tip {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    border-bottom: 0;
+    cursor: default;
+  }
+
+  .label {
+    max-width: 100%;
+    overflow: hidden;
+    padding-inline: 0.3rem;
+  }
+
+  small {
+    font-size: inherit;
+    font-weight: 400;
+  }
 }
 
-/* A label drops its time and then its name as its segment gets too narrow for them. */
-.lifecycle span span {
-  padding-inline: 0.3rem;
-}
-
-.lifecycle small {
-  font-size: inherit;
-  font-weight: 400;
-}
-
+/* A label drops its time and then its name as its segment gets too narrow and the tooltip shows it whole instead. */
 @container (max-width: 6.5rem) {
   .lifecycle small {
     display: none;
@@ -209,7 +226,14 @@ h2 {
 }
 
 @container (max-width: 3rem) {
-  .lifecycle span span {
+  .lifecycle .label {
+    display: none;
+  }
+}
+
+@container (min-width: 6.5rem) {
+  .lifecycle .tip::before,
+  .lifecycle .tip::after {
     display: none;
   }
 }

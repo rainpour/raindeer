@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.38
+
+### Changed
+
+- A request's bar shows a segment's whole label in Pico's tooltip when hovering a segment too narrow for it
+- The system header is only as tall as the deer
+
 ## 1.0.37
 
 ### Changed
