@@ -92,7 +92,8 @@ RSpec.describe IntervalsFormatter do
   end
 
   it 'puts an interval on each mark that one of its turns starts on of the dial of the largest unit it has several of' do
-    schedules = [{ every_minute: 10 }, { every_day: 1, at_hour: 3 }, { every_day: 2 }, { every_minute: 1 }].map do |schedule|
+    schedules = [{ every_minute: 10 }, { every_day: 1, at_hour: 3 }, { every_day: 2 }, { every_minute: 1 },
+                 { every_minute: 3, at_hour: 2 }].map do |schedule|
       described_class::Schedule.new(interval: Low::Loop::Interval[**schedule], observers: '', tip: '')
     end
     now = Time.new(2026, 11, 24, 12, 34, 56)
@@ -102,7 +103,7 @@ RSpec.describe IntervalsFormatter do
       dial = described_class::Dial.new(unit:, step:, labels:, schedules:, now:, origin:)
       dial.marks.reject { it.schedules.empty? }.map(&:label)
     end
-    expect(marked).to eq([[0], [0, 10, 20, 30, 40, 50], [3], %w[Mon Wed Fri Sun]])
+    expect(marked).to eq([[0], [0, 10, 20, 30, 40, 50], [2, 3], %w[Mon Wed Fri Sun]])
   end
 end
 

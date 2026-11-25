@@ -30,13 +30,15 @@ class IntervalsFormatter < LowNode
 
     private
 
-    # An interval is on the dial of the largest unit it's more than one of. So a daily job is on the hours dial.
+    # An interval is on the dial of the largest unit it's more than one of. So a daily job is on the hours dial. One kept
+    # to an hour only runs in it so it's on the hours dial at least.
     def holds?(interval)
       largest = UNITS.values.find { |size| (interval.seconds % size).zero? && interval.seconds > size } || 1
+      largest = [largest, UNITS['hour']].max if interval.at_hour
       largest == @step
     end
 
-    # One kept to an hour runs once in it on the hours dial.
+    # One kept to an hour is on its hour on the hours dial.
     def runs_at?(interval, time)
       return time.hour == interval.at_hour if interval.at_hour && unit == 'hours'
 
