@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.48
+
+### Added
+
+- Rate limits. List paths under `rate_limits` in `config.yaml` with the pages a minute each visitor may ask for there. The most specific path's limit applies, files and the system pages don't count, and a visitor over it gets a 429 with `Retry-After`
+- The system dashboard's Denied (24 hours) stat in place of Nodes, linking to the requests page's new Denied list of 429s
+
+### Fixed
+
+- A request from another site shows on the requests page as its 403 rather than still being answered
+
 ## 1.0.47
 
 ### Changed
