@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.49
+
+### Changed
+
+- The system dashboard shows its intervals on dials of the seconds in a minute and the minutes in an hour and the hours in a day. Each interval is on every mark its turns start on and a neon line steps down each dial with the server's clock
+- Needs LowLoop 0.8.16 whose intervals follow the clock
+
 ## 1.0.48
 
 ### Added
