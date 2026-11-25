@@ -91,15 +91,18 @@ RSpec.describe IntervalsFormatter do
       .to eq(['Every second', 'Every 90 seconds', 'Every 3 minutes', 'Every hour', 'Every 3 minutes at hour 2'])
   end
 
-  it 'puts an interval on each mark of its dial that one of its turns starts on' do
-    schedules = [{ every_minute: 10 }, { every_day: 1, at_hour: 3 }, { every_second: 30 }].map do |schedule|
+  it 'puts an interval on each mark that one of its turns starts on of the dial of the largest unit it has several of' do
+    schedules = [{ every_minute: 10 }, { every_day: 1, at_hour: 3 }, { every_day: 2 }, { every_minute: 1 }].map do |schedule|
       described_class::Schedule.new(interval: Low::Loop::Interval[**schedule], observers: '', tip: '')
     end
-    marked = [['minutes', 60, 60], ['hours', 24, 3600]].map do |unit, size, step|
-      dial = described_class::Dial.new(unit:, size:, step:, schedules:, now: Time.new(2026, 11, 24, 12, 34, 56))
-      dial.marks.reject { it.schedules.empty? }.map(&:number)
+    now = Time.new(2026, 11, 24, 12, 34, 56)
+    marked = [['seconds', 1, (0..59).to_a, 0], ['minutes', 60, (0..59).to_a, 0], ['hours', 3600, (0..23).to_a, 0],
+              ['days', 86_400, described_class::WEEKDAYS, described_class::MONDAY]]
+    marked = marked.map do |unit, step, labels, origin|
+      dial = described_class::Dial.new(unit:, step:, labels:, schedules:, now:, origin:)
+      dial.marks.reject { it.schedules.empty? }.map(&:label)
     end
-    expect(marked).to eq([[0, 10, 20, 30, 40, 50], [3]])
+    expect(marked).to eq([[0], [0, 10, 20, 30, 40, 50], [3], %w[Mon Wed Fri Sun]])
   end
 end
 

@@ -1,36 +1,39 @@
 # frozen_string_literal: true
 
-# Each interval the app observes on dials of the seconds and minutes and hours on every mark its turns start. A neon
+# Each interval the app observes on dials of seconds and minutes and hours and days on every mark its turns start. A neon
 # line steps down each dial with the server's clock so you can see when its jobs run.
 class IntervalsFormatter < LowNode
   Schedule = Data.define(:interval, :observers, :tip)
-  Mark = Data.define(:number, :schedules)
+  Mark = Data.define(:label, :schedules)
 
   UNITS = { 'day' => 86_400, 'hour' => 3600, 'minute' => 60, 'second' => 1 }.freeze
+  WEEKDAYS = %w[Mon Tue Wed Thu Fri Sat Sun].freeze
+  # The epoch began on a Thursday so weeks start 4 days after it on a Monday.
+  MONDAY = 4 * 86_400
 
-  # The seconds in this minute or the minutes in this hour or the hours in this day with what starts a turn on each.
+  # The seconds in this minute or minutes in this hour or hours in this day or days in this week with what starts a turn
+  # on each.
   class Dial
     attr_reader :unit, :marks
 
-    def initialize(unit:, size:, step:, schedules:, now:)
+    def initialize(unit:, step:, labels:, schedules:, now:, origin: 0)
       @unit = unit
       @step = step
-      start = now - ((now.to_i + now.utc_offset) % (size * step))
+      @span = labels.size * step
+      start = now - ((now.to_i + now.utc_offset - origin) % @span)
       held = schedules.select { |schedule| holds?(schedule.interval) }
-      @marks = Array.new(size) do |number|
-        time = start + (number * step)
-        Mark.new(number:, schedules: held.select { |schedule| runs_at?(schedule.interval, time) })
+      @marks = labels.each_with_index.map do |label, index|
+        time = start + (index * step)
+        Mark.new(label:, schedules: held.select { |schedule| runs_at?(schedule.interval, time) })
       end
     end
 
     private
 
-    # An interval is on the dial of the largest unit it runs in whole numbers of. A day's is on the hours dial.
+    # An interval is on the dial of the largest unit it's more than one of. So a daily job is on the hours dial.
     def holds?(interval)
-      return false unless (interval.seconds % @step).zero?
-      return true if unit == 'hours'
-
-      !(interval.seconds % (@step * 60)).zero?
+      largest = UNITS.values.find { |size| (interval.seconds % size).zero? && interval.seconds > size } || 1
+      largest == @step
     end
 
     # One kept to an hour runs once in it on the hours dial.
@@ -47,9 +50,10 @@ class IntervalsFormatter < LowNode
       Schedule.new(interval:, observers: Observers[interval].map { |observer| observer.object.to_s }.join(', '),
                    tip: "#{every(interval)} · #{ticked(interval.triggered_at)}")
     end
-    @dials = [Dial.new(unit: 'seconds', size: 60, step: 1, schedules:, now:),
-              Dial.new(unit: 'minutes', size: 60, step: 60, schedules:, now:),
-              Dial.new(unit: 'hours', size: 24, step: 3600, schedules:, now:)]
+    @dials = [Dial.new(unit: 'seconds', step: 1, labels: (0..59).to_a, schedules:, now:),
+              Dial.new(unit: 'minutes', step: 60, labels: (0..59).to_a, schedules:, now:),
+              Dial.new(unit: 'hours', step: 3600, labels: (0..23).to_a, schedules:, now:),
+              Dial.new(unit: 'days', step: 86_400, labels: WEEKDAYS, schedules:, now:, origin: MONDAY)]
     @any = schedules.any?
     @offset = now.utc_offset
   end
@@ -63,9 +67,9 @@ class IntervalsFormatter < LowNode
             <ol style="--slots: {dial.marks.size}">
               <{ for: mark in: dial.marks }>
                 <li>
-                  <span class="mark">{mark.number}</span>
+                  <span class="mark">{mark.label}</span>
                   <{ for: schedule in: mark.schedules }>
-                    <span class="observer" data-tooltip="{schedule.tip}">{schedule.observers}</span>
+                    <span class="observer" data-tooltip="{schedule.tip}"><span>{schedule.observers}</span></span>
                   <{ :for }>
                 </li>
               <{ :for }>

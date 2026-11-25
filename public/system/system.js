@@ -20,12 +20,13 @@ async function refreshStats() {
 
 if (numbers.length > 0) setInterval(refreshStats, 1000);
 
-// Steps each interval dial's line to the server's second or minute or hour. The offset keeps hours in the server's zone.
+// Steps each interval dial's line to the server's second or minute or hour or weekday from Monday. The offset keeps hours in the server's zone.
 const dials = document.querySelector('.dials');
 const clockReaders = {
   seconds: (now) => now.getUTCSeconds(),
   minutes: (now) => now.getUTCMinutes(),
   hours: (now) => now.getUTCHours(),
+  days: (now) => (now.getUTCDay() + 6) % 7,
 };
 
 function moveDialLines() {

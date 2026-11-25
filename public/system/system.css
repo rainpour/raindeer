@@ -464,7 +464,7 @@ h2 {
 
 /***** INTERVALS *****/
 
-/* The seconds and minutes and hours dials two across and one under another on a phone. */
+/* The seconds and minutes and hours and days dials two across and one under another on a phone. */
 .dials {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -523,9 +523,11 @@ h2 {
     text-align: right;
   }
 
-  /* What runs on that mark as a glowing pill whose tooltip says how often and when it last ran. */
+  /* What runs on that mark as a glowing pill whose tooltip says how often and when it last ran. Its names cut off
+     inside it so the tooltip isn't cut off too. */
   .observer {
-    overflow: hidden;
+    display: flex;
+    min-width: 0;
     padding: 0 0.45rem;
     border: 0;
     border-radius: 999px;
@@ -533,8 +535,12 @@ h2 {
     box-shadow: 0 0 6px color-mix(in srgb, var(--neon) 50%, transparent);
     font-size: 0.65rem;
     line-height: 1.4;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   /* The neon line through the middle of the mark the clock is on now. */
