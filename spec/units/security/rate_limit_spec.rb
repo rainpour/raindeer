@@ -13,7 +13,7 @@ RSpec.describe Rain::RateLimit do
   before do
     described_class.instance_variable_set(:@counts, {})
     allow(Providers).to receive(:[]).and_call_original
-    allow(Providers).to receive(:[]).with('rain.config').and_return(OpenStruct.new(rate_limits: { '/search': 2 }))
+    allow(Providers).to receive(:[]).with('rain.config').and_return(OpenStruct.new(rate_limits: { '/': 3, '/search': 2 }))
     allow(Low::Events::StatusEvent).to receive(:take).and_return(nil)
   end
 
@@ -27,6 +27,12 @@ RSpec.describe Rain::RateLimit do
     2.times { described_class.request(event: request('/search')) }
     expect([described_class.request(event: request('/search/more')).nil?, described_class.request(event: request('/searching')),
             described_class.request(event: request('/search', address: '203.0.113.2'))]).to eq([false, nil, nil])
+  end
+
+  it 'gives a path the most specific limit, so / covers every page apart from those with their own' do
+    pages = Array.new(4) { |page| described_class.request(event: request("/posts/#{page}")) }
+    searches = Array.new(3) { described_class.request(event: request('/search')) }
+    expect([pages.map(&:nil?), searches.map(&:nil?)]).to eq([[true, true, true, false], [true, true, false]])
   end
 
   it "doesn't limit a request without an address, like while developing" do

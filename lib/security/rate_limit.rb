@@ -5,10 +5,11 @@ require 'protocol/http'
 require_relative 'visitor_address'
 
 module Rain
-  # Turns away a visitor who asks for a path too often, like a search that queries the database each time, before it
-  # reaches the router. Each path under rate_limits in config.yaml has the requests a minute each visitor may make to
-  # it and the paths under it. A visitor is their address as a proxy like Cloudflare or Caddy passes it on, so a request
-  # without one, like while developing, isn't limited. It's kept in memory, so it's per process.
+  # Turns away a visitor who asks for pages too often, like a search that queries the database each time, before the
+  # router answers. Files are answered before it, so they don't count. Each path under rate_limits in config.yaml has
+  # the requests a minute each visitor may make to it and the paths under it. The most specific path's limit applies,
+  # so / can limit every page and /search less. A visitor is their address as a proxy like Cloudflare or Caddy passes
+  # it on, so a request without one, like while developing, isn't limited. It's kept in memory, so it's per process.
   module RateLimit
     MINUTE = 60
 
@@ -40,10 +41,11 @@ module Rain
 
       private
 
-      # The limited path a request is to or under, and its limit.
+      # The most specific limited path a request is to or under, and its limit.
       def limit_for(path)
         limits = Providers['rain.config'].rate_limits || {}
-        limits.find { |limited, _| path == limited.to_s || path.start_with?("#{limited.to_s.chomp('/')}/") }
+        matches = limits.select { |limited, _| path == limited.to_s || path.start_with?("#{limited.to_s.chomp('/')}/") }
+        matches.max_by { |limited, _| limited.to_s.length }
       end
 
       # Drops counts from minutes before this one once a minute, so memory stays small however many visitors come.
