@@ -12,8 +12,11 @@ module Rain
   # it on, so a request without one, like while developing, isn't limited. It's kept in memory, so it's per process.
   module RateLimit
     MINUTE = 60
+    # How long the dashboard counts the requests turned away for.
+    WINDOW = 5 * 60
 
     @counts = {}
+    @turned_away = []
     @lock = Mutex.new
 
     class << self
@@ -32,11 +35,19 @@ module Rain
       def wait_for(key, limit:, now: clock)
         minute = (now / MINUTE).floor
         @lock.synchronize do
-          forget(minute)
+          forget(minute, now)
           count = @counts[key]&.fetch(minute, 0).to_i + 1
           @counts[key] = { minute => count }
-          ((minute + 1) * MINUTE - now).ceil if count > limit
+          next if count <= limit
+
+          @turned_away << now
+          ((minute + 1) * MINUTE - now).ceil
         end
+      end
+
+      # How many requests were turned away in the last 5 minutes.
+      def turned_away(now: clock)
+        @lock.synchronize { @turned_away.count { |at| now - at < WINDOW } }
       end
 
       private
@@ -48,12 +59,14 @@ module Rain
         matches.max_by { |limited, _| limited.to_s.length }
       end
 
-      # Drops counts from minutes before this one once a minute, so memory stays small however many visitors come.
-      def forget(minute)
+      # Drops counts from minutes before this one and turned away requests over 5 minutes ago once a minute, so memory
+      # stays small however many visitors come.
+      def forget(minute, now)
         return if @forgot_at == minute
 
         @forgot_at = minute
         @counts.delete_if { |_, counts| !counts.key?(minute) }
+        @turned_away.reject! { |at| now - at >= WINDOW }
       end
 
       def too_many(request, wait:)
@@ -62,10 +75,13 @@ module Rain
         response
       end
 
+      # It joins the request's events, as the app's own page would, so the requests page shows it was turned away.
       def plain_response
         headers = Protocol::HTTP::Headers[{ 'content-type' => 'text/plain' }]
         body = Protocol::HTTP::Body::Buffered.wrap("That's a lot of requests. Try again in a minute.\n")
-        Low::Events::ResponseEvent.new(response: Protocol::HTTP::Response.new('HTTP/1.1', 429, headers, body))
+        response = Low::Events::ResponseEvent.new(response: Protocol::HTTP::Response.new('HTTP/1.1', 429, headers, body))
+        response.record { nil }
+        response
       end
 
       def clock

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../security/rate_limit'
+
 module System
   # The dashboard's stats now, in the order it shows them four to a row: who's here and how busy, how quickly the app
   # answers, its memory, then the framework itself. The dashboard shows them and /system/stats sends them as JSON so
@@ -39,7 +41,8 @@ module System
        Stat.new(key: 'slowest', title: 'Slowest response', value: milliseconds(log.slowest_milliseconds),
                 href: '/system/requests/slowest'),
        Stat.new(key: 'connections', title: 'Open connections', value: Low::ConnectionManager.open_count),
-       Stat.new(key: 'threads', title: 'Threads', value: Thread.list.size)]
+       Stat.new(key: 'turned_away', title: 'Turned away (5 min)', value: Rain::RateLimit.turned_away,
+                href: '/system/requests?show=limited')]
     end
 
     def memory_row(memory)

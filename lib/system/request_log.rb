@@ -4,6 +4,8 @@ module System
   # The requests the event pool still holds, which is its last 100, newest first. Each is read from its event tree, so
   # nothing extra is kept to show them. The pool keeps the system pages' own requests and interval ticks apart.
   class RequestLog
+    LISTS = { 404 => 'missing', 429 => 'limited' }.freeze
+
     # A request with what it answered and how long it took. Its tree is every event it caused, from the request down.
     # Its referrer is the page that linked to it when the browser said.
     Entry = Data.define(:verb, :path, :status, :referrer, :events, :milliseconds, :seconds_ago, :root) do
@@ -12,8 +14,9 @@ module System
         path if verb == 'GET'
       end
 
-      def missing?
-        status == 404
+      # Which list it's in on the requests page: missing for a 404, limited for a 429 and found for the rest.
+      def list
+        LISTS.fetch(status, 'found')
       end
     end
 
