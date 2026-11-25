@@ -41,8 +41,7 @@ module System
        Stat.new(key: 'slowest', title: 'Slowest response', value: milliseconds(log.slowest_milliseconds),
                 href: '/system/requests/slowest'),
        Stat.new(key: 'connections', title: 'Open connections', value: Low::ConnectionManager.open_count),
-       Stat.new(key: 'turned_away', title: 'Turned away (5 min)', value: Rain::RateLimit.turned_away,
-                href: '/system/requests?show=limited')]
+       Stat.new(key: 'threads', title: 'Threads', value: Thread.list.size)]
     end
 
     def memory_row(memory)
@@ -54,7 +53,8 @@ module System
     end
 
     def framework_row(memory)
-      [Stat.new(key: 'nodes', title: 'Nodes', value: LowNode.count),
+      [Stat.new(key: 'turned_away', title: 'Turned away (5 min)', value: Rain::RateLimit.turned_away,
+                href: '/system/requests?show=denied'),
        Stat.new(key: 'collections', title: 'Garbage collections', value: Numbers.delimited(GC.count)),
        Stat.new(key: 'keys', title: 'Observed keys', value: memory.keys),
        Stat.new(key: 'busiest', title: 'Busiest second', value: Traffic.busiest_second)]

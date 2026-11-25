@@ -55,10 +55,10 @@ RSpec.describe System::RequestLog do
     expect(described_class.new(event_trees: trees, answering_now: trees[:a], now:).entries.map(&:path)).to eq(['/shop'])
   end
 
-  it 'puts a 404 in the missing list, a 429 in the limited list and the rest in the found list' do
+  it 'puts a 404 in the missing list, a 429 in the denied list and the rest in the found list' do
     trees = { a: tree('/a', at: 197_000, took: 1, status: 429), b: tree('/b', at: 198_000, took: 1, status: 404),
               c: tree('/c', at: 199_000, took: 1) }
-    expect(described_class.new(event_trees: trees, answering_now: nil, now:).entries.map(&:list)).to eq(%w[found missing limited])
+    expect(described_class.new(event_trees: trees, answering_now: nil, now:).entries.map(&:list)).to eq(%w[found missing denied])
   end
 
   it 'gives the middle and the slowest response time' do
