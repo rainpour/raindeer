@@ -12,7 +12,7 @@ RSpec.describe Rain::RateLimit do
 
   before do
     described_class.instance_variable_set(:@counts, {})
-    described_class.instance_variable_set(:@turned_away, [])
+    described_class.instance_variable_set(:@denied, Hash.new(0))
     allow(Providers).to receive(:[]).and_call_original
     allow(Providers).to receive(:[]).with('rain.config').and_return(OpenStruct.new(rate_limits: { '/': 3, '/search': 2 }))
     allow(Low::Events::StatusEvent).to receive(:take).and_return(nil)
@@ -46,9 +46,9 @@ RSpec.describe Rain::RateLimit do
     expect(Array.new(3) { described_class.request(event: unknown) }).to eq([nil, nil, nil])
   end
 
-  it 'counts the requests turned away in the last 5 minutes' do
+  it 'counts the requests denied in the last 24 hours' do
     3.times { described_class.wait_for('a /search', limit: 1, now: 100) }
-    expect([described_class.turned_away(now: 100), described_class.turned_away(now: 401)]).to eq([2, 0])
+    expect([described_class.denied(now: 86_000), described_class.denied(now: 86_500)]).to eq([2, 0])
   end
 
   it 'counts afresh each minute' do

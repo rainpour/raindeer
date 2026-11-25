@@ -53,7 +53,7 @@ module System
     end
 
     def framework_row(memory)
-      [Stat.new(key: 'turned_away', title: 'Turned away (5 min)', value: Rain::RateLimit.turned_away,
+      [Stat.new(key: 'denied', title: 'Denied (24 hours)', value: Rain::RateLimit.denied,
                 href: '/system/requests?show=denied'),
        Stat.new(key: 'collections', title: 'Garbage collections', value: Numbers.delimited(GC.count)),
        Stat.new(key: 'keys', title: 'Observed keys', value: memory.keys),

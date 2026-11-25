@@ -12,11 +12,11 @@ module Rain
   # it on, so a request without one, like while developing, isn't limited. It's kept in memory, so it's per process.
   module RateLimit
     MINUTE = 60
-    # How long the dashboard counts the requests turned away for.
-    WINDOW = 5 * 60
+    # The minutes the dashboard counts denied requests over, which is a day.
+    DAY = 24 * 60
 
     @counts = {}
-    @turned_away = []
+    @denied = Hash.new(0)
     @lock = Mutex.new
 
     class << self
@@ -39,19 +39,20 @@ module Rain
       def wait_for(key, limit:, now: clock)
         minute = (now / MINUTE).floor
         @lock.synchronize do
-          forget(minute, now)
+          forget(minute)
           count = @counts[key]&.fetch(minute, 0).to_i + 1
           @counts[key] = { minute => count }
           next if count <= limit
 
-          @turned_away << now
+          @denied[minute] += 1
           ((minute + 1) * MINUTE - now).ceil
         end
       end
 
-      # How many requests were turned away in the last 5 minutes.
-      def turned_away(now: clock)
-        @lock.synchronize { @turned_away.count { |at| now - at < WINDOW } }
+      # How many requests were denied in the last 24 hours.
+      def denied(now: clock)
+        minute = (now / MINUTE).floor
+        @lock.synchronize { @denied.select { |at, _| minute - at < DAY }.values.sum }
       end
 
       private
@@ -63,14 +64,14 @@ module Rain
         matches.max_by { |limited, _| limited.to_s.length }
       end
 
-      # Drops counts from minutes before this one and turned away requests over 5 minutes ago once a minute, so memory
-      # stays small however many visitors come.
-      def forget(minute, now)
+      # Drops counts from minutes before this one, and denials from over a day ago, once a minute. Denials are counted
+      # by the minute, so memory stays small however many visitors come.
+      def forget(minute)
         return if @forgot_at == minute
 
         @forgot_at = minute
         @counts.delete_if { |_, counts| !counts.key?(minute) }
-        @turned_away.reject! { |at| now - at >= WINDOW }
+        @denied.delete_if { |at, _| minute - at >= DAY }
       end
 
       def too_many(request, wait:)
