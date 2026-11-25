@@ -19,3 +19,23 @@ async function refreshStats() {
 }
 
 if (numbers.length > 0) setInterval(refreshStats, 1000);
+
+// Steps each interval dial's line to the server's second or minute or hour. The offset keeps hours in the server's zone.
+const dials = document.querySelector('.dials');
+const clockReaders = {
+  seconds: (now) => now.getUTCSeconds(),
+  minutes: (now) => now.getUTCMinutes(),
+  hours: (now) => now.getUTCHours(),
+};
+
+function moveDialLines() {
+  const now = new Date(Date.now() + Number(dials.dataset.offset) * 1000);
+  dials.querySelectorAll('.dial').forEach((dial) => {
+    dial.style.setProperty('--now', clockReaders[dial.dataset.unit](now));
+  });
+}
+
+if (dials) {
+  moveDialLines();
+  setInterval(moveDialLines, 1000);
+}

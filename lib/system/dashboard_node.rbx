@@ -34,9 +34,7 @@ module System
         <{ :if }>
 
         <h2>{"Intervals"}</h2>
-        <div class="panel">
-          <{ IntervalsFormatter }>
-        </div>
+        <{ IntervalsFormatter }>
       <{ :LayoutNode }>
     end
   end

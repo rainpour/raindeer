@@ -461,3 +461,94 @@ h2 {
     list-style: none;
   }
 }
+
+/***** INTERVALS *****/
+
+/* The seconds and minutes and hours dials three across and one under another on a phone. */
+.dials {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Each dial is a card of its seconds or minutes or hours spread evenly down the same height. */
+.dial {
+  --neon: #22d3ee;
+  margin: 0;
+  border: var(--system-border);
+  border-radius: var(--system-radius);
+  background-color: var(--pico-card-background-color);
+  box-shadow: var(--system-shadow);
+
+  header {
+    margin: 0 0 0.5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--pico-muted-color);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  ol {
+    position: relative;
+    display: grid;
+    grid-template-rows: repeat(var(--slots), 1fr);
+    height: 36rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 0;
+    margin: 0;
+    border-top: 1px solid color-mix(in srgb, var(--pico-muted-border-color) 40%, transparent);
+    list-style: none;
+  }
+
+  .mark {
+    width: 1.5rem;
+    color: var(--pico-muted-color);
+    font-size: 0.6rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  /* What runs on that mark as a glowing pill whose tooltip says how often and when it last ran. */
+  .observer {
+    overflow: hidden;
+    padding: 0 0.45rem;
+    border: 0;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--neon) 20%, transparent);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--neon) 50%, transparent);
+    font-size: 0.65rem;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The neon line through the middle of the mark the clock is on now. */
+  ol::after {
+    position: absolute;
+    top: calc((var(--now, 0) + 0.5) * 100% / var(--slots));
+    right: 0;
+    left: 0;
+    height: 2px;
+    border-radius: 2px;
+    background-color: var(--neon);
+    box-shadow: 0 0 4px var(--neon), 0 0 12px var(--neon), 0 0 24px #0891b2;
+    content: "";
+    pointer-events: none;
+    transition: top 0.4s ease-out;
+  }
+}

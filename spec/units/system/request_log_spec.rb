@@ -90,6 +90,17 @@ RSpec.describe IntervalsFormatter do
             every(every_minute: 3, at_hour: 2)])
       .to eq(['Every second', 'Every 90 seconds', 'Every 3 minutes', 'Every hour', 'Every 3 minutes at hour 2'])
   end
+
+  it 'puts an interval on each mark of its dial that one of its turns starts on' do
+    schedules = [{ every_minute: 10 }, { every_day: 1, at_hour: 3 }, { every_second: 30 }].map do |schedule|
+      described_class::Schedule.new(interval: Low::Loop::Interval[**schedule], observers: '', tip: '')
+    end
+    marked = [['minutes', 60, 60], ['hours', 24, 3600]].map do |unit, size, step|
+      dial = described_class::Dial.new(unit:, size:, step:, schedules:, now: Time.new(2026, 11, 24, 12, 34, 56))
+      dial.marks.reject { it.schedules.empty? }.map(&:number)
+    end
+    expect(marked).to eq([[0, 10, 20, 30, 40, 50], [3]])
+  end
 end
 
 RSpec.describe System::Numbers do
