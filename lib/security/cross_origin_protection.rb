@@ -34,10 +34,13 @@ module Rain
 
       private
 
+      # It joins the request's events, as the app's own page would, so the requests page shows it was turned away.
       def forbidden
         headers = Protocol::HTTP::Headers[{ 'content-type' => 'text/plain' }]
         body = Protocol::HTTP::Body::Buffered.wrap("This was sent from another site, so it wasn't accepted.\n")
-        Low::Events::ResponseEvent.new(response: Protocol::HTTP::Response.new('HTTP/1.1', 403, headers, body))
+        response = Low::Events::ResponseEvent.new(response: Protocol::HTTP::Response.new('HTTP/1.1', 403, headers, body))
+        response.record { nil }
+        response
       end
 
       def header(request, name)
