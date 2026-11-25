@@ -44,8 +44,8 @@ RSpec.describe TrendFormatter do
     expect(points).to eq('0.0,76.0 300.0,40.0 600.0,4.0')
   end
 
-  it 'draws values that never change as a flat line across the middle' do
-    points = described_class.new(event: nil, title: 'Keys', values: [62, 62]).instance_variable_get(:@points)
-    expect(points).to eq('0.0,40.0 600.0,40.0')
+  it 'draws values that never change and a lone value as a flat line across the middle' do
+    points = [[62, 62], [62]].map { described_class.new(event: nil, title: 'Keys', values: it).instance_variable_get(:@points) }
+    expect(points).to eq(['0.0,40.0 600.0,40.0'] * 2)
   end
 end

@@ -28,6 +28,8 @@ class TrendFormatter < LowNode
 
   # Each value's place on the line, spread evenly across and scaled so the lowest is at the bottom and the highest at the top.
   def line_points(values)
+    # A lone value is drawn across the whole chart until there's a second.
+    values *= 2 if values.one?
     lowest = values.min
     range = values.max - lowest
     # A line that never changes runs across the middle, so it reads as steady rather than empty.
