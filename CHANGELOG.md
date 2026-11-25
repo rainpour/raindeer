@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.51
+
+### Added
+
+- A dial of the days in a week on the system dashboard for intervals of several days
+
+### Changed
+
+- Each interval is on the dial of the largest unit it has several of. So a daily job is on the hours dial at its hour and an every minute job is on the seconds dial at 0
+
+### Fixed
+
+- An interval's tooltip shows past its pill rather than being cut off
+
 ## 1.0.50
 
 ### Changed
