@@ -1,5 +1,6 @@
-// Refreshes the dashboard's numbers each second from /system/stats, while the page is in view.
+// Refreshes the dashboard's numbers and interval pills each second from /system/stats, while the page is in view.
 const numbers = document.querySelectorAll('[data-stat]');
+const pills = document.querySelectorAll('[data-pill]');
 
 async function refreshStats() {
   if (document.hidden) return;
@@ -12,6 +13,12 @@ async function refreshStats() {
     numbers.forEach((number) => {
       const value = stats[number.dataset.stat];
       if (value !== undefined) number.textContent = value;
+    });
+    pills.forEach((pill) => {
+      const outcome = stats.intervals?.[pill.dataset.pill];
+      if (!outcome) return;
+      pill.dataset.status = outcome.status;
+      pill.dataset.tooltip = outcome.tip;
     });
   } catch {
     // The next second tries again, like after a restart.

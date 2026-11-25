@@ -523,24 +523,47 @@ h2 {
     text-align: right;
   }
 
-  /* What runs on that mark as a glowing pill whose tooltip says how often and when it last ran. Its names cut off
-     inside it so the tooltip isn't cut off too. */
+  /* What runs on that mark as a glowing pill whose tooltip says how often and how its turn went. It's green once it ran
+     and red if it failed and blue if it was skipped. Its names cut off inside it so the tooltip isn't cut off too. */
   .observer {
+    --pill: var(--neon);
     display: flex;
+    align-items: center;
+    gap: 0.3rem;
     min-width: 0;
     padding: 0 0.45rem;
     border: 0;
     border-radius: 999px;
-    background-color: color-mix(in srgb, var(--neon) 20%, transparent);
-    box-shadow: 0 0 6px color-mix(in srgb, var(--neon) 50%, transparent);
+    background-color: color-mix(in srgb, var(--pill) 40%, transparent);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--pill) 50%, transparent);
     font-size: 0.65rem;
     line-height: 1.4;
 
-    span {
+    &[data-status="ran"] { --pill: #22c55e; }
+    &[data-status="failed"] { --pill: #ef4444; }
+    &[data-status="skipped"] { --pill: #3b82f6; }
+
+    .name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+  }
+
+  /* A circle spinning right of the names while the job runs. */
+  .spinner {
+    display: none;
+    flex: none;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .observer[data-status="running"] .spinner {
+    display: block;
   }
 
   /* The neon line through the middle of the mark the clock is on now. */
@@ -556,5 +579,11 @@ h2 {
     content: "";
     pointer-events: none;
     transition: top 0.4s ease-out;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
   }
 }

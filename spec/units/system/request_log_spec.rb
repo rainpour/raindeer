@@ -82,7 +82,7 @@ end
 
 RSpec.describe IntervalsFormatter do
   def every(**schedule)
-    described_class.allocate.send(:every, Low::Loop::Interval[**schedule])
+    described_class.every(Low::Loop::Interval[**schedule])
   end
 
   it 'says how often an interval runs in its largest whole unit' do
@@ -94,16 +94,30 @@ RSpec.describe IntervalsFormatter do
   it 'puts an interval on each mark that one of its turns starts on of the dial of the largest unit it has several of' do
     schedules = [{ every_minute: 10 }, { every_day: 1, at_hour: 3 }, { every_day: 2 }, { every_minute: 1 },
                  { every_minute: 3, at_hour: 2 }].map do |schedule|
-      described_class::Schedule.new(interval: Low::Loop::Interval[**schedule], observers: '', tip: '')
+      described_class::Schedule.new(interval: Low::Loop::Interval[**schedule], observers: '', every: '', index: 0)
     end
     now = Time.new(2026, 11, 24, 12, 34, 56)
     marked = [['seconds', 1, (0..59).to_a, 0], ['minutes', 60, (0..59).to_a, 0], ['hours', 3600, (0..23).to_a, 0],
               ['days', 86_400, described_class::WEEKDAYS, described_class::MONDAY]]
     marked = marked.map do |unit, step, labels, origin|
       dial = described_class::Dial.new(unit:, step:, labels:, schedules:, now:, origin:)
-      dial.marks.reject { it.schedules.empty? }.map(&:label)
+      dial.marks.reject { it.pills.empty? }.map(&:label)
     end
     expect(marked).to eq([[0], [0, 10, 20, 30, 40, 50], [2, 3], %w[Mon Wed Fri Sun]])
+  end
+end
+
+RSpec.describe IntervalsFormatter::Dial do
+  it 'shows how the turn on each mark went in its pill' do
+    noon = Time.new(2026, 11, 24, 12, 0, 0)
+    interval = Low::Loop::Interval[every_minute: 1]
+    interval.due?(noon - 60)
+    allow(interval).to receive(:trigger)
+    interval.tick(noon)
+    schedule = IntervalsFormatter::Schedule.new(interval:, observers: 'Views', every: 'Every minute', index: 0)
+    dial = described_class.new(unit: 'seconds', step: 1, labels: (0..59).to_a, schedules: [schedule], now: noon + 5)
+    expect(dial.marks.first.pills).to eq([IntervalsFormatter::Pill.new(key: 'seconds-0-0', observers: 'Views', status: 'ran',
+                                                                       tip: 'Every minute · Ran')])
   end
 end
 
