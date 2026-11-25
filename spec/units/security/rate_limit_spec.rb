@@ -36,6 +36,10 @@ RSpec.describe Rain::RateLimit do
     expect([pages.map(&:nil?), searches.map(&:nil?)]).to eq([[true, true, true, false], [true, true, false]])
   end
 
+  it "doesn't count the system pages, as the dashboard refreshes itself each second" do
+    expect(Array.new(5) { described_class.request(event: request('/system/stats')) }.uniq).to eq([nil])
+  end
+
   it "doesn't limit a request without an address, like while developing" do
     unknown = Low::Events::RequestEvent.new(request: Protocol::HTTP::Request.new('https', 'example.com', 'GET', '/search', nil,
                                                                                  Protocol::HTTP::Headers.new, nil))

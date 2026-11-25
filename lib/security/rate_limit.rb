@@ -21,9 +21,13 @@ module Rain
 
     class << self
       # A request over its path's limit goes no further than a 429: the app's page for it, or a plain one when it has none.
+      # The system pages don't count, as the dashboard refreshes itself each second.
       def request(event:)
         request = event.request
-        path, limit = limit_for(request.path.to_s.split('?').first.to_s)
+        page = request.path.to_s.split('?').first.to_s
+        return if page == '/system' || page.start_with?('/system/')
+
+        path, limit = limit_for(page)
         address = VisitorAddress.from(request.headers) if limit
         return unless address
 
