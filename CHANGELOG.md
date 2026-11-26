@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- A route only runs as a parent of a longer path where a part of the path ends, so `/post` doesn't run for `/posts`
+- Routing reads the request path once per request rather than once per letter, so longer paths route faster
+
+### Changed
+
+- Needs LowType 1.7.1
+
 ## 1.0.53
 
 ### Added
