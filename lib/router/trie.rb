@@ -40,15 +40,16 @@ module Rain
       current_node.route = route
     end
 
-    def match(request:, current_node: @root_node, current_index: 0, params: {})
-      path = Events::Query.path(request)
+    # The path is decoded once per request and passed down, rather than for every character matched.
+    def match(request:, current_node: @root_node, current_index: 0, params: {}, path: nil)
+      path ||= Events::Query.path(request)
 
       return [] if (key = path[current_index]).nil?
 
       # Static request path segment, which wins over a :param when it matches a route to the end of the path,
       # like "/posts/drafts/7" for "/posts/drafts/:id" rather than "/posts/:id".
       static_node = current_node.child(key:)
-      static_events = static_node ? events_from(node: static_node, next_index: current_index + 1, params:, request:) : []
+      static_events = static_node ? events_from(node: static_node, next_index: current_index + 1, params:, request:, path:) : []
       return static_events if ends?(static_events)
 
       # Dynamic request path segment, each with its own params, so one route's arg isn't another's.
@@ -56,7 +57,7 @@ module Rain
         arg, next_index = capture_arg(arg_start_index: current_index, path:)
         param_params = params.merge(param.delete_prefix(':').to_sym => arg)
 
-        events_from(node: current_node.child(key: param), next_index:, params: param_params, request:)
+        events_from(node: current_node.child(key: param), next_index:, params: param_params, request:, path:)
       end
       # The static events were a different path from here, so when a :param matches to the end only its events count.
       return dynamic_events if ends?(dynamic_events)
@@ -66,11 +67,18 @@ module Rain
 
     private
 
-    # The node's own route event, if it has a route, then those of the routes below it.
-    def events_from(node:, next_index:, params:, request:)
+    # The node's own route event, if it has a route that ends on a whole segment of the path, then those of the routes
+    # below it. The trie is by character, so "/solo1" is passed through on the way to "/solo10" but isn't its parent.
+    def events_from(node:, next_index:, params:, request:, path:)
       route_events = []
-      route_events << route_event(next_index:, params:, request:, route: node.route) if node.route
-      route_events.concat(match(request:, current_node: node, current_index: next_index, params:))
+      route_events << route_event(next_index:, params:, request:, route: node.route, path:) if node.route && segment_end?(path:, next_index:)
+      route_events.concat(match(request:, current_node: node, current_index: next_index, params:, path:))
+    end
+
+    # Whether the path ends here or a new segment starts here, or the route itself ended with a "/", like "/".
+    def segment_end?(path:, next_index:)
+      next_char = path[next_index]
+      next_char.nil? || next_char == '/' || path[next_index - 1] == '/'
     end
 
     # Whether a route was matched to the end of the path, to render or receive rather than only for its side effects.
@@ -79,8 +87,8 @@ module Rain
     end
 
     # Mid nodes side_effect, end nodes render.
-    def route_event(next_index:, params:, request:, route:)
-      action = Events::Query.path(request)[next_index].nil? ? :render : :side_effect
+    def route_event(next_index:, params:, request:, route:, path:)
+      action = path[next_index].nil? ? :render : :side_effect
       action = :receive if action == :render && request.body
 
       actions = [action]

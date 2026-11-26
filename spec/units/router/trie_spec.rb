@@ -150,6 +150,27 @@ module Rain
         end
       end
 
+      context 'with a route that starts with the letters of another' do
+        before do
+          trie.merge(route: Route.new(path: '/'))
+          trie.merge(route: Route.new(path: '/post'))
+          trie.merge(route: Route.new(path: '/posts'))
+          trie.merge(route: Route.new(path: '/posts/:id'))
+        end
+
+        it "doesn't match the shorter route as a mid node" do
+          request = Low::Support::RequestFactory.request(path: '/posts', verb: 'GET')
+          paths = trie.match(request:).map { |route_event| route_event.route.path }
+          expect(paths).to eq(['/', '/posts'])
+        end
+
+        it 'still matches whole segments as mid nodes' do
+          request = Low::Support::RequestFactory.request(path: '/posts/1', verb: 'GET')
+          paths = trie.match(request:).map { |route_event| route_event.route.path }
+          expect(paths).to eq(['/', '/posts', '/posts/:id'])
+        end
+      end
+
       context 'with a static segment next to a :param' do
         before do
           trie.merge(route: Route.new(path: '/dispatches/:id'))
