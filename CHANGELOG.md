@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- Needs Antlers 1.5.11, which compiles RBX templates to Ruby on their first render, so a template renders about 4 times faster
+- Needs observers 1.1.4, which no longer makes a new object on every event, and Lowkey 0.7.5, which reads files as UTF-8 on servers without a UTF-8 locale
+
 ## 1.0.54
 
 ### Fixed
