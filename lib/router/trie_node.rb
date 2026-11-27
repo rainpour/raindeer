@@ -14,6 +14,7 @@ module Rain
 
     def initialize
       @nodes = {}
+      @codes = {} # The same children as @nodes, by their character's codepoint, so a match needn't slice strings.
       @params = []
       @route = nil
     end
@@ -22,12 +23,26 @@ module Rain
       @nodes[key]
     end
 
+    # The child for a character's codepoint, like 47 for "/". A :param child has none, as it isn't one character.
+    def code_child(code)
+      @codes[code]
+    end
+
+    def params?
+      !@params.empty?
+    end
+
     # A param is kept once, though more routes pass through it, like /users/:id and /users/:id/edit, or it'd match twice.
     def upsert_child(key: String)
       return @nodes[key] if @nodes.key?(key)
 
-      @params << key if key.start_with?(':')
-      @nodes[key] = TrieNode.new
+      node = TrieNode.new
+      if key.start_with?(':')
+        @params << key
+      else
+        @codes[key.ord] = node
+      end
+      @nodes[key] = node
     end
   end
 end

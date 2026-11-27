@@ -171,6 +171,35 @@ module Rain
         end
       end
 
+      context 'with a :param after a character in its segment' do
+        before do
+          trie.merge(route: Route.new(path: '/@:username'))
+          trie.merge(route: Route.new(path: '/@:username/posts/:id'))
+          trie.merge(route: Route.new(path: '/@admin'))
+        end
+
+        def route_events(path)
+          request = Low::Support::RequestFactory.request(path:, verb: 'GET')
+          trie.match(request:).map { |route_event| [route_event.route.path, route_event.params] }
+        end
+
+        it 'matches the rest of the segment as the :param' do
+          expect(route_events('/@maedi')).to eq([['/@:username', { username: 'maedi' }]])
+        end
+
+        it 'matches routes below it' do
+          expect(route_events('/@maedi/posts/3').last).to eq(['/@:username/posts/:id', { username: 'maedi', id: '3' }])
+        end
+
+        it 'matches a static route that is the whole segment, rather than the :param' do
+          expect(route_events('/@admin')).to eq([['/@admin', {}]])
+        end
+
+        it 'matches the :param when the static route only starts the same' do
+          expect(route_events('/@admins')).to eq([['/@:username', { username: 'admins' }]])
+        end
+      end
+
       context 'with a static segment next to a :param' do
         before do
           trie.merge(route: Route.new(path: '/dispatches/:id'))

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- The router walks a path's characters in a loop, by codepoint, rather than calling itself for each character with a new string. It only branches where a route has a `:param`. A 3 segment path matches in about a third of the time, with a fifth of the objects
+- A path without a `?` or `%` is matched as it came, rather than split and decoded
+
 ## 1.0.55
 
 ### Changed

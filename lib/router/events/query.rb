@@ -12,7 +12,10 @@ module Rain
         # A request's path without its query string, which routes match on. It's decoded, so /recipes/w%C3%BCnderbread
         # is /recipes/wünderbread, as content's paths are written. One that doesn't decode to UTF-8 stays as it came.
         def path(request)
-          path = request.path.split('?', 2).first
+          path = request.path
+          path = path.split('?', 2).first if path.include?('?')
+          return path unless path.include?('%') # Only a "%" is decoded, so most paths can be used as they came.
+
           decoded = URI.decode_uri_component(path)
           return path unless decoded.valid_encoding?
 
