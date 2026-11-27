@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.58
+
+### Fixed
+
+- The requests page's Denied list shows the last 100 denied requests. It only looked in the event pool's last 100 requests of every kind, so it was often empty while the dashboard counted denials over a day
+
 ## 1.0.57
 
 ### Changed
