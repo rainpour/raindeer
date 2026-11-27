@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - A parent route's `side_effect` is skipped when no node observing the route has one, rather than running through the event tree for nothing. A 3 segment path with 100 routes is about 11% faster. These empty side effects no longer show in the request's event tree
+- Needs LowNode 0.5.16, whose nodes say which actions they handle
 
 ## 1.0.58
 

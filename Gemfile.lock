@@ -56,7 +56,7 @@ PATH
 PATH
   remote: ../lownode
   specs:
-    lownode (0.5.15)
+    lownode (0.5.16)
       antlers (~> 1.5, >= 1.5.3)
       lowevent
       lowtype (~> 1.6)
@@ -122,7 +122,7 @@ PATH
       lowevent (~> 0.8, >= 0.8.11)
       lowkey (~> 0.7, >= 0.7.5)
       lowloop (~> 0.8, >= 0.8.18)
-      lownode (~> 0.5, >= 0.5.15)
+      lownode (~> 0.5, >= 0.5.16)
       lowtype (>= 1.7.3)
       observers (~> 1.1, >= 1.1.5)
       ostruct
@@ -366,7 +366,7 @@ CHECKSUMS
   lowevent (0.8.11)
   lowkey (0.7.5)
   lowloop (0.8.18)
-  lownode (0.5.15)
+  lownode (0.5.16)
   lowtype (1.7.3)
   observers (1.1.5)
   openssl (4.0.2) sha256=1037ad2868ae58df9ad917891c0c0f9815a1172f6846d4bcdd508e4c2ee747c2
