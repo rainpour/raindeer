@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - A request's site and locale read the Host, X-Forwarded-Proto, Accept-Language and CF-IPCountry headers from the request's list of headers, rather than by indexing and parsing every header
+- Needs LowEvent 0.8.12, LowNode 0.5.17 and LowLoop 0.8.19, which make fewer objects for each request. A `GET /` is about 4% faster
 
 ## 1.0.59
 
