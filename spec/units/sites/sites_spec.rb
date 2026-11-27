@@ -61,6 +61,18 @@ RSpec.describe Rain::Site do
 
       expect(regions).to eq(['US', nil, nil])
     end
+
+    it 'reads a language header sent twice, in any case, without indexing every header' do
+      allow(Antlers::Translations).to receive(:locales).and_return(['fr'])
+      fields = Protocol::HTTP::Headers.new([%w[Host sourdough.com], %w[Accept-Language de], ['accept-language', 'fr;q=0.5']])
+      request = Protocol::HTTP::Request.new('http', 'sourdough.com', 'GET', '/', nil, fields, nil)
+      allow(fields).to receive(:to_h).and_call_original
+
+      locale = described_class.from_request(request, site: Rain::Site.from_request(request))
+
+      expect(locale.language).to eq('fr')
+      expect(fields).not_to have_received(:to_h)
+    end
   end
 
   it "gives a route event its request's site and locale" do

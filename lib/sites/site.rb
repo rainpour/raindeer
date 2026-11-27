@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'providers'
+require_relative 'request_header'
 
 module Rain
   # A site the app serves, by the host a request came to, like sourdough.com.au: its origin to link back to, the region
@@ -15,9 +16,8 @@ module Rain
     # The last request's site is kept, as most requests come to the same one, so it isn't made again, unless the sites
     # in config.yaml have changed since.
     def self.from_request(request)
-      headers = request.headers
-      authority = Array(headers['host']).first || request.authority.to_s
-      scheme = Array(headers['x-forwarded-proto']).first || request.scheme || 'http'
+      authority = RequestHeader.first(request, 'host') || request.authority.to_s
+      scheme = RequestHeader.first(request, 'x-forwarded-proto') || request.scheme || 'http'
 
       sites = configured
       last_authority, last_scheme, last_sites, last_site = @last

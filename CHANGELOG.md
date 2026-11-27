@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- A request's site and locale read the Host, X-Forwarded-Proto, Accept-Language and CF-IPCountry headers from the request's list of headers, rather than by indexing and parsing every header
+
 ## 1.0.59
 
 ### Changed
