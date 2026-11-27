@@ -13,6 +13,7 @@ RSpec.describe Rain::RateLimit do
   before do
     described_class.instance_variable_set(:@counts, {})
     described_class.instance_variable_set(:@denied, Hash.new(0))
+    described_class.instance_variable_set(:@denied_trees, [])
     allow(Providers).to receive(:[]).and_call_original
     allow(Providers).to receive(:[]).with('rain.config').and_return(OpenStruct.new(rate_limits: { '/': 3, '/search': 2 }))
     allow(Low::Events::StatusEvent).to receive(:take).and_return(nil)
@@ -54,5 +55,15 @@ RSpec.describe Rain::RateLimit do
   it 'counts afresh each minute' do
     expect([described_class.wait_for('a /search', limit: 1, now: 90), described_class.wait_for('a /search', limit: 1, now: 95),
             described_class.wait_for('a /search', limit: 1, now: 121)]).to eq([nil, 25, nil])
+  end
+
+  it "keeps the last 100 denied requests' trees for the requests page once the pool has moved on" do
+    pool = double.as_null_object
+    allow(Providers).to receive(:[]).with('low.event.pool').and_return(pool)
+    allow(pool).to receive(:event_tree_now) { Object.new }
+    2.times { described_class.request(event: request('/search')) }
+    allowed = described_class.denied_trees.size
+    102.times { described_class.request(event: request('/search')) }
+    expect([allowed, described_class.denied_trees.size]).to eq([0, 100])
   end
 end

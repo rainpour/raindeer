@@ -6,11 +6,14 @@ module System
   class RequestsNode < LowNode
     observe '/system/requests'
 
-    # Found requests show by default, ?show=missing shows the 404s and ?show=denied those a rate limit turned away.
+    # Found requests show by default, ?show=missing shows the 404s and ?show=denied those a rate limit turned away. The
+    # rate limit keeps its own last 100 so they're still listed once the pool has moved on, like the stat's day of them.
     def initialize(event:)
       list = event.query[:show].to_s
       list = 'found' unless RequestLog::LISTS.value?(list)
-      @entries = RequestLog.new.entries.select { |entry| entry.list == list }
+      trees = Providers['low.event.pool'].event_trees
+      trees = Rain::RateLimit.denied_trees if list == 'denied'
+      @entries = RequestLog.new(event_trees: trees).entries.select { |entry| entry.list == list }
       @found = (list == 'found').to_s
       @missing = (list == 'missing').to_s
       @denied = (list == 'denied').to_s

@@ -14,9 +14,12 @@ module Rain
     MINUTE = 60
     # The minutes the dashboard counts denied requests over, which is a day.
     DAY = 24 * 60
+    # The denied requests' trees kept for the requests page, which outlast the event pool's last 100 of every kind.
+    KEPT_TREES = 100
 
     @counts = {}
     @denied = Hash.new(0)
+    @denied_trees = []
     @lock = Mutex.new
 
     class << self
@@ -32,7 +35,10 @@ module Rain
         return unless address
 
         wait = wait_for("#{address} #{path}", limit:)
-        too_many(request, wait:) if wait
+        return unless wait
+
+        keep_tree(Providers['low.event.pool'].event_tree_now)
+        too_many(request, wait:)
       end
 
       # Seconds until the visitor may ask again, or nil while they're within the limit. Each counts afresh each minute.
@@ -55,7 +61,21 @@ module Rain
         @lock.synchronize { @denied.select { |at, _| minute - at < DAY }.values.sum }
       end
 
+      # The last 100 denied requests' event trees by their place, for the requests page's Denied list.
+      def denied_trees
+        @lock.synchronize { @denied_trees.each_with_index.to_h { |tree, index| [index, tree] } }
+      end
+
       private
+
+      def keep_tree(tree)
+        return unless tree
+
+        @lock.synchronize do
+          @denied_trees << tree
+          @denied_trees.shift while @denied_trees.size > KEPT_TREES
+        end
+      end
 
       # The most specific limited path a request is to or under, and its limit.
       def limit_for(path)
