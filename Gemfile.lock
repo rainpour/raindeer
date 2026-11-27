@@ -57,7 +57,7 @@ PATH
 PATH
   remote: ../lowtype
   specs:
-    lowtype (1.7.1)
+    lowtype (1.7.2)
       dirload
       expressions (~> 0.1)
       lowkey (>= 0.7.1)
@@ -114,7 +114,7 @@ PATH
       lowkey (~> 0.7, >= 0.7.5)
       lowloop (~> 0.8, >= 0.8.17)
       lownode (~> 0.5, >= 0.5.14)
-      lowtype (>= 1.7.1)
+      lowtype (>= 1.7.2)
       observers (~> 1.1, >= 1.1.4)
       ostruct
       paint
@@ -363,7 +363,7 @@ CHECKSUMS
   lowkey (0.7.5)
   lowloop (0.8.17)
   lownode (0.5.14)
-  lowtype (1.7.1)
+  lowtype (1.7.2)
   observers (1.1.4)
   openssl (4.0.2) sha256=1037ad2868ae58df9ad917891c0c0f9815a1172f6846d4bcdd508e4c2ee747c2
   ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912

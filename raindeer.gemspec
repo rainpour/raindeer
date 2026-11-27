@@ -46,7 +46,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'lowkey', '~> 0.7', '>= 0.7.5'
   spec.add_dependency 'lowloop', '~> 0.8', '>= 0.8.17'
   spec.add_dependency 'lownode', '~> 0.5', '>= 0.5.14'
-  spec.add_dependency 'lowtype', '>= 1.7.1'
+  spec.add_dependency 'lowtype', '>= 1.7.2'
 
   spec.add_dependency 'antlers', '~> 1.5', '>= 1.5.11'
   spec.add_dependency 'expressions', '~> 0.4'

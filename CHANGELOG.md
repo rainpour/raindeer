@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The router walks a path's characters in a loop, by codepoint, rather than calling itself for each character with a new string. It only branches where a route has a `:param`. A 3 segment path matches in about a third of the time, with a fifth of the objects
 - A path without a `?` or `%` is matched as it came, rather than split and decoded
+- Needs LowType 1.7.2, whose readers make no new objects, like the trie's
 
 ## 1.0.55
 
