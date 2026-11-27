@@ -25,6 +25,8 @@ module Rain
     # The templates' own language can be requested too, so "en,es;q=0.5" renders English templates as written. Without a
     # language there's a translation for, it's the default, like a site's own language.
     def negotiate(accept_language:, locales: Antlers::Translations.locales, default: source_locale)
+      return default if accept_language.nil?
+
       locales = [source_locale, *locales.reject { it.casecmp?(source_locale) }]
 
       requested_locale(accept_language:, locales:) || default
