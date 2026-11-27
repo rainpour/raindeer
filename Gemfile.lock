@@ -17,15 +17,6 @@ PATH
     expressions (0.4.0)
 
 PATH
-  remote: ../lowdata
-  specs:
-    lowdata (0.4.4)
-      expressions (~> 0.4)
-      lowevent (~> 0.8, >= 0.8.6)
-      lowtype (~> 1.6)
-      sequel (~> 5.0)
-
-PATH
   remote: ../lowevent
   specs:
     lowevent (0.8.11)
@@ -113,7 +104,7 @@ PATH
 PATH
   remote: .
   specs:
-    raindeer (1.0.58)
+    raindeer (1.0.59)
       antlers (~> 1.5, >= 1.5.12)
       dirload (~> 0.7, >= 0.7.1)
       expressions (~> 0.4)
@@ -199,6 +190,11 @@ GEM
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
+    lowdata (0.4.4)
+      expressions (~> 0.4)
+      lowevent (~> 0.8, >= 0.8.6)
+      lowtype (~> 1.6)
+      sequel (~> 5.0)
     openssl (4.0.2)
     ostruct (0.6.3)
     paint (2.3.0)
@@ -301,7 +297,7 @@ DEPENDENCIES
   dirload!
   expressions!
   irb
-  lowdata!
+  lowdata
   lowevent!
   lowkey!
   lowloop!
@@ -362,7 +358,7 @@ CHECKSUMS
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
   listen (3.10.1) sha256=4c3f32855657f348747da4dd2372ff3790d90a6b1d3e4f21a3706adb2d04783c
   logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
-  lowdata (0.4.4)
+  lowdata (0.4.4) sha256=b9da740081f8fe5a4707fc8b8e810c1be33cbb57d20daaeceaab9f261f84d64d
   lowevent (0.8.11)
   lowkey (0.7.5)
   lowloop (0.8.18)
@@ -393,7 +389,7 @@ CHECKSUMS
   providers (0.6.3)
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
-  raindeer (1.0.58)
+  raindeer (1.0.59)
   raindown (0.25.4)
   rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
