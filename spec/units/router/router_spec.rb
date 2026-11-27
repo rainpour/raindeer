@@ -224,4 +224,48 @@ RSpec.describe Rain::Router do
       end
     end
   end
+
+  describe "a parent route's side_effect" do
+    let(:request_event) { Low::Events::RequestEvent.new(request: Low::Support::RequestFactory.request(path: '/posts/7')) }
+
+    def observer_class(path, handles:)
+      Class.new do
+        include Observers
+        observe path
+        define_singleton_method(:handles?) { |action| handles.include?(action) } unless handles.nil?
+      end
+    end
+
+    let(:post_node) { observer_class('/posts/:id', handles: [:render]) }
+
+    before do
+      allow(post_node).to receive(:render).and_return('post')
+      router.route '/posts'
+      router.route '/posts/:id'
+    end
+
+    it "isn't given to a node without one" do
+      posts_node = observer_class('/posts', handles: [:render])
+      allow(posts_node).to receive(:side_effect)
+
+      expect(router.request(event: request_event)).to eq('post')
+      expect(posts_node).not_to have_received(:side_effect)
+    end
+
+    it 'is given to a node with one' do
+      posts_node = observer_class('/posts', handles: %i[render side_effect])
+      allow(posts_node).to receive(:side_effect)
+
+      router.request(event: request_event)
+      expect(posts_node).to have_received(:side_effect)
+    end
+
+    it "is given to an observer that can't say" do
+      posts_observer = observer_class('/posts', handles: nil)
+      allow(posts_observer).to receive(:side_effect)
+
+      router.request(event: request_event)
+      expect(posts_observer).to have_received(:side_effect)
+    end
+  end
 end

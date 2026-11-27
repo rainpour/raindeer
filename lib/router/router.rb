@@ -71,11 +71,25 @@ module Rain
       headers.add('content-language', locale) unless headers.include?('content-language')
     end
 
+    # A parent route's side_effect is skipped when no node observing the route has one, as it would do nothing but still
+    # go through the event tree. An observer that can't say, like an object that isn't a node, or one that observes it
+    # with an action of its own, is always given it.
+    def handled?(route_event)
+      return true unless route_event.actions.first == :side_effect
+
+      Observers::Keys[route_event.key].observers.any? do |observer|
+        object = observer.object
+        observer.action || !object.respond_to?(:handles?) || object.handles?(:side_effect)
+      end
+    end
+
     def respond(request:)
       response_event = nil
 
       # The last route event will render a response event which we want to return to the request event.
       @trie.match(request:).each do |route_event|
+        next unless handled?(route_event)
+
         response_event = route_event.take
       end
       return response_event if response_event
