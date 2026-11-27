@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Needs the new releases of LowEvent, LowLoop, LowNode, LowType, Antlers, observers and Providers, which make fewer objects for each request. A `GET /` is about 8% faster
 - A request's site is kept for the next request to the same host, the configured sites are read once, and a request without an `Accept-Language` header skips negotiating its language. A `GET /` makes about 40 fewer objects
 
 ## 1.0.56
