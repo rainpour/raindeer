@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.61
+
+### Changed
+
+- A site whose `language` is set under `sites` in config.yaml is always in it, whatever a visitor's Accept-Language asks for, like `sourdough.com.au: { region: AU, language: en-AU }`. A site without one still follows each visitor's browser
+- The matrix's settings ship with the gem so an app no longer needs a `config/matrix.yaml`. An app's own `config/matrix.yaml` overrides the settings it sets
+
 ## 1.0.60
 
 ### Changed
