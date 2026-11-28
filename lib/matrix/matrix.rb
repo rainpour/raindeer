@@ -15,7 +15,16 @@ module Rain
     include LowType
     include Observers
 
-    def initialize(event_pool:, config: ConfigLoader.load('matrix.yaml'))
+    # The gem's matrix.yaml is always there and an app's config/matrix.yaml overrides its settings.
+    def self.load_config
+      gem_path = File.expand_path('matrix.yaml', __dir__)
+      app_path = File.expand_path('config/matrix.yaml', Dir.pwd)
+      return ConfigLoader.load(gem_path) unless File.exist?(app_path)
+
+      ConfigLoader.load(gem_path, ConfigLoader.load(app_path).to_h)
+    end
+
+    def initialize(event_pool:, config: Matrix.load_config)
       @event_pool = event_pool
       @config = config
       @effects = [(LeetEffect.new(config:) if config.leet), ColorEffect.new(config:)].compact
