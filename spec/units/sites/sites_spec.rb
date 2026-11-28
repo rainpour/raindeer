@@ -47,6 +47,13 @@ RSpec.describe Rain::Site do
       expect([locale.language, locale.region]).to eq(%w[en-US AU])
     end
 
+    it "takes the site's language when config.yaml sets it, whatever the visitor's browser asks for" do
+      allow(Antlers::Translations).to receive(:locales).and_return(['en-US'])
+      site = Rain::Site.from_request(request('levain.fr'))
+
+      expect(described_class.from_request(request('levain.fr', accept_language: 'en-US,en;q=0.8'), site:).language).to eq('fr')
+    end
+
     it "takes the site's language without a translation for the visitor's" do
       allow(Antlers::Translations).to receive(:locales).and_return([])
       site = Rain::Site.from_request(request('levain.fr'))

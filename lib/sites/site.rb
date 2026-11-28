@@ -6,10 +6,11 @@ require_relative 'request_header'
 module Rain
   # A site the app serves, by the host a request came to, like sourdough.com.au: its origin to link back to, the region
   # its visitors are most likely in, and the language its pages are written in. Hosts are set under "sites" in
-  # config.yaml, and a host that isn't there is a site of its own without a region:
+  # config.yaml, and a host that isn't there is a site of its own without a region. A site whose language is set is
+  # always in it, whatever a visitor's browser asks for, and one without follows each visitor's Accept-Language:
   #
   #   sites:
-  #     sourdough.com.au: { region: AU }
+  #     sourdough.com.au: { region: AU, language: en-AU }
   #     sourdough.com: {}
   Site = Data.define(:host, :origin, :region, :language) do
     # The site a request came to, by its Host header and the scheme a proxy like Caddy forwarded it with.
@@ -45,6 +46,11 @@ module Rain
       configured = (sites || {}).to_h { |host, settings| [host.to_s.downcase, settings || {}] }.freeze
       @configured = [sites, configured].freeze
       configured
+    end
+
+    # Whether config.yaml sets its language, so every visitor reads it in that one.
+    def fixed_language?
+      !self.class.configured.dig(host, :language).nil?
     end
 
     # Its name in an hreflang link, like en-au, or x-default for a site without a region, which is for everyone else.

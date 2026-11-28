@@ -4,10 +4,13 @@ require_relative 'request_header'
 
 module Rain
   # Who a response is for: the language it's written in and the region its visitor is in, which can differ, like an
-  # American reading the Australian site. The language is the visitor's Accept-Language among the translations there
-  # are, or else the site's own. The region is the site's, or else the country a CDN like Cloudflare found them in.
+  # American reading the Australian site. The language is the site's when config.yaml sets it, or else the visitor's
+  # Accept-Language among the translations there are, or else the site's own. The region is the site's, or else the
+  # country a CDN like Cloudflare found them in.
   Locale = Data.define(:language, :region) do
     def self.from_request(request, site:)
+      return new(language: site.language, region: site.region || cloudflare_country(request)) if site.fixed_language?
+
       accept_language = RequestHeader.joined(request, 'accept-language')
       language = Translations.negotiate(accept_language: (accept_language unless accept_language&.strip&.empty?), default: site.language)
       new(language:, region: site.region || cloudflare_country(request))
